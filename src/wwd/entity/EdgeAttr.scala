@@ -7,6 +7,8 @@ class EdgeAttr extends Serializable {
     var tz_bl: Double = 0.0
     var jy_bl: Double = 0.0
     var kg_bl: Double = 0.0
+
+    override def toString = s"EdgeAttr($tz_bl, $jy_bl, $kg_bl)"
 }
 
 object EdgeAttr {
@@ -25,6 +27,8 @@ object EdgeAttr {
     }
 }
 class InfluenceEdgeAttr(val bel:Double,val pl:Double) extends Serializable {
+
+    override def toString = s"InfluenceEdgeAttr($bel, $pl)"
 }
 
 object InfluenceEdgeAttr {

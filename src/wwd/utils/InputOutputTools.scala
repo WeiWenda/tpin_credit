@@ -184,4 +184,42 @@ object InputOutputTools {
         Graph(vertices, edges)
     }
 
+    def getFromCsv(sc: SparkContext, vertexPath: String, edgePath: String): Graph[VertexAttr, EdgeAttr] = {
+        //    val edgesTxt=sc.textFile("file:///home/david/IdeaProjects/Find_IL_Edge/lib/InputCsv/edges.csv")
+        //    val vertexTxt=sc.textFile("file:///home/david/IdeaProjects/Find_IL_Edge/lib/InputCsv/vertices.csv")
+        val edgesTxt = sc.textFile(edgePath)
+        val vertexTxt = sc.textFile(vertexPath)
+        val vertices = vertexTxt.filter(!_.startsWith("id")).map(_.split(",")).map{
+            case node=>
+                var i = 3
+                var gd_list: Seq[(String,Double)] = Seq()
+                var zrrtz_list:Seq[(String,Double)] =Seq()
+                while(i< node.size){
+                    if(node(i).startsWith("股东"))
+                        gd_list ++= Seq((node(i),node(i+1).toDouble))
+                    else  if(node(i).startsWith("投资方"))
+                        zrrtz_list ++= Seq((node(i),node(i+1).toDouble))
+                    i+=2
+                }
+                val vertex=VertexAttr(node(1),node(2))
+                vertex.gd_list = gd_list
+                vertex.zrrtz_list = zrrtz_list
+                vertex.xyfz = node.last.toInt
+                (node(0).toLong,vertex)
+        }
+
+        val edges = edgesTxt.filter(!_.startsWith("source")).map(_.split(",")).map {
+            case e =>
+                val eattr = EdgeAttr()
+                eattr.tz_bl = e(2).toDouble
+                eattr.jy_bl = e(3).toDouble
+                eattr.kg_bl = e(4).toDouble
+                Edge(e(0).toLong, e(1).toLong,eattr)
+        }
+        Graph(vertices, edges)
+    }
+    def printGraph[VD,ED]( graph:Graph[VD,ED])={
+        graph.vertices.collect().foreach { println }
+        graph.edges.collect().foreach { case edge => println(edge) }
+    }
 }

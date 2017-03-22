@@ -2,6 +2,7 @@ package wwd.utils
 
 import org.apache.spark.graphx
 import org.apache.spark.graphx._
+import org.apache.spark.rdd.RDD
 import wwd.entity.{ InfluenceEdgeAttr, VertexAttr, EdgeAttr}
 import scala.collection.Seq
 
@@ -127,15 +128,15 @@ object MessagePropagation {
         }
         val simplifiedGraph = selectNeighbor(belAndPl.mapVertices((vid, vattr) => 1))
         val initGraph = simplifiedGraph.mapVertices { case (vid, useless) => Seq(Seq((vid, 1.0, 0.0))) }
-        val paths = getPath(initGraph, 4, 1).filter(_._2.size > 1)
+        val paths = getPath(initGraph, 4, 1).flatMap(_._2).filter(_.size>1).groupBy(e=>e.head._1)
         val influenceEdge = influenceOnPath(paths, 1)
         val influenceGraph = Graph(belAndPl.vertices,influenceEdge).persist()
         val finalInfluenceGraph =influenceInTotal(influenceGraph)
         finalInfluenceGraph
     }
 
-    //annotation of david:针对图结构的shared segment和crossing segment进行修改
-    def graphReduce(vattr: MessagePropagation.Paths): MessagePropagation.Paths = {
+    //annotation of david:针对图结构的shared segment和crossing segment进行修改TODO
+    def graphReduce[T<:Iterable[Seq[(graphx.VertexId, Double, Double)]]](vattr:T):T= {
         vattr
     }
 
@@ -144,7 +145,7 @@ object MessagePropagation {
         val a = x._2
         val b = y._2
         var pTrust = 0D
-        val unc = x._3 + y._3
+        val unc = x._3 + y._3 - y._2
         if (lambda == 0) pTrust = a.min(b)
         else if (lambda == 1) pTrust = a * b
         else if (lambda == Integer.MAX_VALUE) pTrust = (a + b - 1).max(0.0)
@@ -152,9 +153,9 @@ object MessagePropagation {
         (y._1, pTrust, unc)
     }
 
-    //annotation of david:利用pTrust和unc聚合多路径的影响值
+    //annotation of david:利用pTrust和unc聚合多路径的影响值，权重比例为 1-unc
     def combinePath1(x: (Double, Double), y: (Double, Double)) = {
-        (x._1+(y._1*y._2),x._2+y._2)
+        (x._1+(y._1*(1-y._2)),x._2+1-y._2)
     }
     //annotation of david:利用pTrust和unc聚合多路径的影响值
     def combinePath2(x: (Double, Double), y: (Double, Double)) = {
@@ -162,18 +163,20 @@ object MessagePropagation {
     }
 
     //annotation of david:使用三角范式计算路径上的影响值（包含参照影响逻辑和基础影响逻辑）
-    def influenceOnPath(paths: VertexRDD[MessagePropagation.Paths], lambda: Int) = {
-        val influences = paths.mapValues { (vid, vattr) =>
+    def influenceOnPath[T<:Iterable[Seq[(graphx.VertexId, Double, Double)]]](paths: RDD[(VertexId,T)], lambda: Int) = {
+        val influences = paths.map{case (vid, vattr) =>
                 val DAG = graphReduce(vattr)
                 val influenceSinglePath = DAG.map { path =>
                     val res = path.reduceLeft((a, b) => combineInfluence(a, b, lambda))
+                    //annotation of david:pTrust使用t-norm，unc使用pl-bel求平均
                     (res._1,res._2,res._3/(path.size-1))
                 }
-                influenceSinglePath
-            }.flatMap { case (vid, list) =>
+                (vid,influenceSinglePath)
+            }
+           .flatMap { case (vid, list) =>
                 list.map { case (dstid, pTrust, unc) => ((vid, dstid), (pTrust, unc)) }
             }.aggregateByKey((0D,0D))(combinePath1,combinePath2).
-            map{case ((vid,dstid),(pTrust,unc))=> Edge(vid,dstid,pTrust/unc) }
+            map{case ((vid,dstid),(pTrust,total_certainty))=> Edge(vid,dstid,pTrust/total_certainty) }
         influences
     }
 

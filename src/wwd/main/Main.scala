@@ -20,6 +20,7 @@ object Main{
 
         val tpin1 = InputOutputTools.getFromObjectFile(sc,"/tpin/wwd/influence/vertices","/tpin/wwd/influence/edges")
 
+        //annotation of david:影响力网络构建成功
         val influenceGraph = MessagePropagation.run(tpin1)
 
 
