@@ -11,6 +11,8 @@ import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.storage.StorageLevel
 import wwd.entity.{EdgeAttr, VertexAttr}
 
+import scala.reflect.ClassTag
+
 /**
   * Created by weiwenda on 2017/3/15.
   */
@@ -153,7 +155,7 @@ object InputOutputTools {
     }
 
     // 保存TPIN到HDFS
-    def saveAsObjectFile(tpin: Graph[VertexAttr, EdgeAttr], sparkContext: SparkContext,
+    def saveAsObjectFile[VD,ED](tpin: Graph[VD, ED], sparkContext: SparkContext,
                          verticesFilePath:String = "/tpin/object/vertices_wwd",edgesFilePath:String = "/tpin/object/edges_wwd"): Unit = {
 
         checkDirExist(sparkContext, verticesFilePath)
@@ -174,14 +176,14 @@ object InputOutputTools {
         }
     }
     // 从HDFS获取TPIN
-    def getFromObjectFile(sparkContext: SparkContext, verticesFilePath: String = "/tpin/object/vertices_wwd", edgesFilePath: String = "/tpin/object/edges_wwd")
-    : Graph[VertexAttr, EdgeAttr] = {
+    def getFromObjectFile[VD:ClassTag,ED:ClassTag](sparkContext: SparkContext, verticesFilePath: String = "/tpin/object/vertices_wwd", edgesFilePath: String = "/tpin/object/edges_wwd")
+    : Graph[VD, ED] = {
         // 对象方式获取顶点集
-        val vertices = sparkContext.objectFile[(VertexId, VertexAttr)](verticesFilePath).repartition(200)
+        val vertices = sparkContext.objectFile[(VertexId,VD)](verticesFilePath).repartition(200)
         // 对象方式获取边集
-        val edges = sparkContext.objectFile[Edge[EdgeAttr]](edgesFilePath).repartition(200)
+        val edges = sparkContext.objectFile[Edge[ED]](edgesFilePath).repartition(200)
         // 构建图
-        Graph(vertices, edges)
+        Graph[VD,ED](vertices, edges)
     }
 
     def getFromCsv(sc: SparkContext, vertexPath: String, edgePath: String): Graph[VertexAttr, EdgeAttr] = {
@@ -221,5 +223,9 @@ object InputOutputTools {
     def printGraph[VD,ED]( graph:Graph[VD,ED])={
         graph.vertices.collect().foreach { println }
         graph.edges.collect().foreach { case edge => println(edge) }
+    }
+    def Exist(sc: SparkContext, outpath: String) = {
+        val hdfs = FileSystem.get(new URI("hdfs://cloud-03:9000"), sc.hadoopConfiguration)
+        hdfs.exists(new Path(outpath))
     }
 }
