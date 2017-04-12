@@ -34,7 +34,7 @@ object MessagePropagation {
         toReturn
     }
 
-    //annotation of david:修正企业相关自然人的权重
+    //annotation of david:归一化企业相关自然人的权重
     def fixVertexWeight(tpin: Graph[VertexAttr, EdgeAttr]) = {
         val toReurn = tpin.mapVertices { case (vid, vattr) =>
             val sum_gd = vattr.gd_list.map(_._2).sum
@@ -69,7 +69,7 @@ object MessagePropagation {
         }
         val messages = belAndPl.aggregateMessages[Seq[(VertexId, InfluenceEdgeAttr)]](sendMessage(_), _ ++ _)
         val filtered_edges = messages.map { case (vid, edgelist) =>
-            (vid, edgelist.sortBy(_._2.bel)(Ordering[Double].reverse).slice(0, 3))
+            (vid, edgelist.sortBy(_._2.bel)(Ordering[Double].reverse).slice(0, selectTopN))
         }.flatMap { case (vid, edgelist) => edgelist.map(e => Edge(vid, e._1, e._2)) }
         Graph(belAndPl.vertices, filtered_edges).persist()
     }
@@ -79,24 +79,13 @@ object MessagePropagation {
         // 发送路径
         def sendPaths(edge: EdgeContext[Paths, InfluenceEdgeAttr, Paths],
                       length: Int): Unit = {
-            val satisfied = edge.srcAttr.filter(_.size == length).filter(!_.map(_._1).contains(edge.dstId))
+            val satisfied = edge.dstAttr.filter(_.size == length).filter(!_.map(_._1).contains(edge.srcId))
             if (satisfied.size > 0) {
                 // 向终点发送顶点路径集合
-                edge.sendToDst(satisfied.map(_ ++ Seq((edge.dstId, edge.attr.bel, edge.attr.pl))))
+                edge.sendToSrc(satisfied.map(Seq((edge.srcId, edge.attr.bel, edge.attr.pl))++_) )
             }
         }
-        // 路径长度
-        val degreesRDD = graph.degrees.cache()
-        // 使用度大于0的顶点和边构建图
-        var preproccessedGraph = graph
-            .outerJoinVertices(degreesRDD)((vid, vattr, degreesVar) => (vattr, degreesVar.getOrElse(0)))
-            .subgraph(vpred = {
-                case (vid, (vattr, degreesVar)) =>
-                    degreesVar > 0
-            }
-            )
-            .mapVertices { case (vid, (list, degreesVar)) => list }
-            .cache()
+        var preproccessedGraph = graph.cache()
         var i = initLength
         var messages = preproccessedGraph.aggregateMessages[Paths](sendPaths(_, i), _ ++ _)
         var activeMessages = messages.count()
@@ -119,6 +108,7 @@ object MessagePropagation {
 
     //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
     def run(tpin: Graph[VertexAttr, EdgeAttr]) = {
+        // tpin size: vertices:93523 edges:633300
         val belAndPl = fixVertexWeight(tpin).mapTriplets { case triplet =>
             val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
             //annotation of david:bel为概率下限，pl为概率上限
@@ -127,12 +117,20 @@ object MessagePropagation {
             InfluenceEdgeAttr(bel, pl)
         }
         val simplifiedGraph = selectNeighbor(belAndPl.mapVertices((vid, vattr) => 1))
-        val initGraph = simplifiedGraph.mapVertices { case (vid, useless) => Seq(Seq((vid, 1.0, 0.0))) }
-        val paths = getPath(initGraph, 4, 1).flatMap(_._2).filter(_.size>1).groupBy(e=>e.head._1)
+        //annotation of david:企业对自身的bel和pl均为1
+        val initGraph = simplifiedGraph.mapVertices { case (vid, useless) => Seq(Seq((vid, 1.0, 1.0))) }
+        //initGraph size: vertices:93523 edges:132965
+        val paths = getPath(initGraph, 4, 1)
+//        paths.saveAsObjectFile("/tpin/wwd/influence/paths")
+//        sc.objectFile[(VertexId,MessagePropagation.Paths)](verticesFilePath)
+        //paths:93523
+
+        //annotation of david:使用第一种三角范式
         val influenceEdge = influenceOnPath(paths, 1)
         val influenceGraph = Graph(belAndPl.vertices,influenceEdge).persist()
-        val finalInfluenceGraph =influenceInTotal(influenceGraph)
+        val finalInfluenceGraph = influenceInTotal(influenceGraph)
         finalInfluenceGraph
+        //finalInfluenceGraph size: vertices:93523 edges:1850050
     }
 
     //annotation of david:针对图结构的shared segment和crossing segment进行修改TODO
@@ -185,7 +183,7 @@ object MessagePropagation {
         val toReturn = influenceGraph.mapTriplets { case triplet =>
             val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
             triplet.attr.max(controllerInterSect)
-        }
+        }.subgraph(epred = triplet => triplet.attr>0.01)
         toReturn
     }
 

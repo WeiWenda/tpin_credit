@@ -15,15 +15,18 @@ object CombineNSXY {
         var i = 0
         var res = 0D
         while(i< Sortedlist.size){
-            if(Sortedlist(i)._1 < xyfz){
-                val (cur_fx,weight) = Sortedlist(i)
+            val (cur_fx,weight) = Sortedlist(i)
+            if(cur_fx < xyfz){
                 res += (cur_fx-xyfz) *weight/totalWeight
             }
             i+=1
         }
+//        if((xyfz + res).toInt > 0)
+//            (xyfz + res).toInt
+//        else
+//            xyfz
         (xyfz + res).toInt
     }
-
 
     def AggregateMessage(listMessage: Seq[(Int, Double)]): Int = {
         val totalWeight = listMessage.map(_._2).sum
@@ -34,11 +37,10 @@ object CombineNSXY {
 
     //annotation of david:先对已有评分的节点进行修正，（只拉低）
     def run(influenceGraph: Graph[Int, Double]):  Graph[Int, Double] ={
-        val alreadyGraph = influenceGraph.subgraph(vpred = (vid,vattr) =>
-            vattr != 0
-        )
-        val fzMessage = alreadyGraph.aggregateMessages[Seq[(Int,Double)]](ctx =>
-            ctx.sendToDst(Seq((ctx.srcAttr,ctx.attr))),_++_).cache()
+        val fzMessage = influenceGraph.aggregateMessages[Seq[(Int,Double)]](ctx =>
+            if(ctx.srcAttr > 0 && ctx.dstAttr > 0){
+                ctx.sendToDst(Seq((ctx.srcAttr,ctx.attr)))
+            },_++_).cache()
 
         val fixAlreadyGraph = influenceGraph.outerJoinVertices(fzMessage){
             case(vid,vattr,listMessage) =>
@@ -60,6 +62,10 @@ object CombineNSXY {
                     AggregateMessage(listMessage.get)
                 }
         }.cache()
+        fzMessage.unpersist(blocking = false)
+        fzMessage2.unpersist(blocking = false)
+        fixAlreadyGraph.unpersistVertices(blocking = false)
+        fixAlreadyGraph.edges.unpersist(blocking = false)
         fixNotyetGraph
     }
 }

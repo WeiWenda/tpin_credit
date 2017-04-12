@@ -22,9 +22,11 @@ object Main{
 
         //annotation of david:影响力网络构建成功
         val influenceGraph = MessagePropagation.run(tpin1).mapVertices((vid,vattr)=>vattr.xyfz)
+        InputOutputTools.saveAsObjectFile(influenceGraph,sc,"/tpin/wwd/influence/inf_vertices","/tpin/wwd/influence/inf_edges")
+        val influenceGraph1 = InputOutputTools.getFromObjectFile[Int,Double](sc,"/tpin/wwd/influence/inf_vertices","/tpin/wwd/influence/inf_edges")
 
-        //annotation of david:修正后听影响力网络
-        val fixedGraph = CombineNSXY.run(influenceGraph)
+        //annotation of david:修正后听影响力网络 vertices:93523 edges:1850050
+        val fixedGraph = CombineNSXY.run(influenceGraph1)
 
         val outputPaths = Seq("/tpin/wwd/influence/fixed_vertices","/tpin/wwd/influence/fixed_edges")
         InputOutputTools.saveAsObjectFile(fixedGraph,sc,outputPaths(0),outputPaths(1))
