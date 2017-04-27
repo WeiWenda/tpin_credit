@@ -56,20 +56,24 @@ object InputOutputTools {
             filter($"JJXZ".startsWith("4") || $"JJXZ".startsWith("5")).
             selectExpr("VERTEXID", "ZJHM as GD", "TZBL").
             rdd.map(row => ((row.getAs[BigDecimal]("VERTEXID").longValue(), row.getAs[String]("GD")), row.getAs[BigDecimal]("TZBL").doubleValue())).
-            reduceByKey(_+_).map{case((cid,gd),tzbl) => (cid,(gd,tzbl))}.
+            reduceByKey(_ + _).map { case ((cid, gd), tzbl) => (cid, (gd, tzbl)) }.
             groupByKey()
 
         val tzf_list = tzf_DF.
             filter($"TZFXZ".startsWith("4") || $"TZFXZ".startsWith("5")).
             selectExpr("VERTEXID", "ZJHM as TZF", "TZBL").
             rdd.map(row => ((row.getAs[BigDecimal]("VERTEXID").longValue(), row.getAs[String]("TZF")), row.getAs[BigDecimal]("TZBL").doubleValue())).
-            reduceByKey(_+_).map{case((cid,gd),tzbl) => (cid,(gd,tzbl))}.
+            reduceByKey(_ + _).map { case ((cid, gd), tzbl) => (cid, (gd, tzbl)) }.
             groupByKey()
 
         val nsr_fddbr = fddbr_DF.selectExpr("VERTEXID", "NSRDZDAH", "ZJHM as FDDBR").
             rdd.map(row => (row.getAs[BigDecimal]("VERTEXID").longValue(), (row.getAs[BigDecimal]("NSRDZDAH").toString, row.getAs[String]("FDDBR"))))
         val xyjb = XYJB_DF.select("NSRDZDAH", "XYGL_XYJB_DM", "FZ").
-            rdd.map(row => (row.getAs[BigDecimal]("NSRDZDAH").toString(), (row.getAs[BigDecimal]("FZ").intValue(), row.getAs[String]("XYGL_XYJB_DM"))))
+            rdd.map(row =>
+            if (row.getAs[String]("XYGL_XYJB_DM") == "D")
+                (row.getAs[BigDecimal]("NSRDZDAH").toString(), (40, row.getAs[String]("XYGL_XYJB_DM")))
+            else
+                (row.getAs[BigDecimal]("NSRDZDAH").toString(), (row.getAs[BigDecimal]("FZ").intValue(), row.getAs[String]("XYGL_XYJB_DM"))))
 
         val ALL_VERTEX = nsr_fddbr.leftOuterJoin(tzf_list).keyBy(_._1).leftOuterJoin(gd_list).
             map { case (vid, ((useless, ((nsrdzdah, fddbr), opt_tzflist)), opt_gd_list)) =>
@@ -81,7 +85,7 @@ object InputOutputTools {
                 (vid, vertexAttr)
             }.keyBy(_._2.nsrdzdah).leftOuterJoin(xyjb).
             map { case (dzdah, ((vid, vattr), opt_fz_dm)) =>
-                if(!opt_fz_dm.isEmpty){
+                if (!opt_fz_dm.isEmpty) {
                     vattr.xyfz = opt_fz_dm.get._1
                     vattr.xydj = opt_fz_dm.get._2
                 }
@@ -105,7 +109,7 @@ object InputOutputTools {
             join(fddbr_DF, $"TZ_ZJHM" === $"NSRSBH").
             select("VERTEXID", "BTZ_VERTEXID", "TZBL")
 
-        val gd_cc= gd_cc1.unionAll(gd_cc2).
+        val gd_cc = gd_cc1.unionAll(gd_cc2).
             rdd.distinct().map { case row =>
             val eattr = EdgeAttr()
             eattr.kg_bl = row.getAs[BigDecimal]("TZBL").doubleValue()
@@ -155,8 +159,8 @@ object InputOutputTools {
     }
 
     // 保存TPIN到HDFS
-    def saveAsObjectFile[VD,ED](tpin: Graph[VD, ED], sparkContext: SparkContext,
-                         verticesFilePath:String = "/tpin/object/vertices_wwd",edgesFilePath:String = "/tpin/object/edges_wwd"): Unit = {
+    def saveAsObjectFile[VD, ED](tpin: Graph[VD, ED], sparkContext: SparkContext,
+                                 verticesFilePath: String = "/tpin/object/vertices_wwd", edgesFilePath: String = "/tpin/object/edges_wwd"): Unit = {
 
         checkDirExist(sparkContext, verticesFilePath)
         checkDirExist(sparkContext, edgesFilePath)
@@ -164,6 +168,18 @@ object InputOutputTools {
         tpin.vertices.repartition(1).saveAsObjectFile(verticesFilePath)
         // 对象方式保存边集
         tpin.edges.repartition(1).saveAsObjectFile(edgesFilePath)
+    }
+
+    // 保存TPIN到HDFS
+    def saveAsTextFile[VD, ED](tpin: Graph[VD, ED], sparkContext: SparkContext,
+                               verticesFilePath: String = "/tpin/object/vertices_wwd", edgesFilePath: String = "/tpin/object/edges_wwd"): Unit = {
+
+        checkDirExist(sparkContext, verticesFilePath)
+        checkDirExist(sparkContext, edgesFilePath)
+        // 对象方式保存顶点集
+        tpin.vertices.repartition(1).saveAsTextFile(verticesFilePath)
+        // 对象方式保存边集
+        tpin.edges.repartition(1).saveAsTextFile(edgesFilePath)
     }
 
     def checkDirExist(sc: SparkContext, outpath: String) = {
@@ -175,15 +191,16 @@ object InputOutputTools {
             case e: Throwable => e.printStackTrace()
         }
     }
+
     // 从HDFS获取TPIN
-    def getFromObjectFile[VD:ClassTag,ED:ClassTag](sparkContext: SparkContext, verticesFilePath: String = "/tpin/object/vertices_wwd", edgesFilePath: String = "/tpin/object/edges_wwd")
+    def getFromObjectFile[VD: ClassTag, ED: ClassTag](sparkContext: SparkContext, verticesFilePath: String = "/tpin/object/vertices_wwd", edgesFilePath: String = "/tpin/object/edges_wwd")
     : Graph[VD, ED] = {
         // 对象方式获取顶点集
-        val vertices = sparkContext.objectFile[(VertexId,VD)](verticesFilePath).repartition(200)
+        val vertices = sparkContext.objectFile[(VertexId, VD)](verticesFilePath).repartition(200)
         // 对象方式获取边集
         val edges = sparkContext.objectFile[Edge[ED]](edgesFilePath).repartition(200)
         // 构建图
-        Graph[VD,ED](vertices, edges)
+        Graph[VD, ED](vertices, edges)
     }
 
     def getFromCsv(sc: SparkContext, vertexPath: String, edgePath: String): Graph[VertexAttr, EdgeAttr] = {
@@ -191,23 +208,23 @@ object InputOutputTools {
         //    val vertexTxt=sc.textFile("file:///home/david/IdeaProjects/Find_IL_Edge/lib/InputCsv/vertices.csv")
         val edgesTxt = sc.textFile(edgePath)
         val vertexTxt = sc.textFile(vertexPath)
-        val vertices = vertexTxt.filter(!_.startsWith("id")).map(_.split(",")).map{
-            case node=>
+        val vertices = vertexTxt.filter(!_.startsWith("id")).map(_.split(",")).map {
+            case node =>
                 var i = 3
-                var gd_list: Seq[(String,Double)] = Seq()
-                var zrrtz_list:Seq[(String,Double)] =Seq()
-                while(i< node.size){
-                    if(node(i).startsWith("股东"))
-                        gd_list ++= Seq((node(i),node(i+1).toDouble))
-                    else  if(node(i).startsWith("投资方"))
-                        zrrtz_list ++= Seq((node(i),node(i+1).toDouble))
-                    i+=2
+                var gd_list: Seq[(String, Double)] = Seq()
+                var zrrtz_list: Seq[(String, Double)] = Seq()
+                while (i < node.size) {
+                    if (node(i).startsWith("股东"))
+                        gd_list ++= Seq((node(i), node(i + 1).toDouble))
+                    else if (node(i).startsWith("投资方"))
+                        zrrtz_list ++= Seq((node(i), node(i + 1).toDouble))
+                    i += 2
                 }
-                val vertex=VertexAttr(node(1),node(2))
+                val vertex = VertexAttr(node(1), node(2))
                 vertex.gd_list = gd_list
                 vertex.zrrtz_list = zrrtz_list
                 vertex.xyfz = node.last.toInt
-                (node(0).toLong,vertex)
+                (node(0).toLong, vertex)
         }
 
         val edges = edgesTxt.filter(!_.startsWith("source")).map(_.split(",")).map {
@@ -216,14 +233,18 @@ object InputOutputTools {
                 eattr.tz_bl = e(2).toDouble
                 eattr.jy_bl = e(3).toDouble
                 eattr.kg_bl = e(4).toDouble
-                Edge(e(0).toLong, e(1).toLong,eattr)
+                Edge(e(0).toLong, e(1).toLong, eattr)
         }
         Graph(vertices, edges)
     }
-    def printGraph[VD,ED]( graph:Graph[VD,ED])={
-        graph.vertices.collect().foreach { println }
+
+    def printGraph[VD, ED](graph: Graph[VD, ED]) = {
+        graph.vertices.collect().foreach {
+            println
+        }
         graph.edges.collect().foreach { case edge => println(edge) }
     }
+
     def Exist(sc: SparkContext, outpath: String) = {
         val hdfs = FileSystem.get(new URI("hdfs://cloud-03:9000"), sc.hadoopConfiguration)
         hdfs.exists(new Path(outpath))

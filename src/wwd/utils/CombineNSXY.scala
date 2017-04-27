@@ -10,23 +10,20 @@ import scala.collection.Seq
 object CombineNSXY {
 
     def AggregateMessage(xyfz: Int, listMessage: scala.Seq[( Int, Double)]): Int = {
-        val totalWeight = listMessage.map(_._2).sum
+        val totalWeight = listMessage.filter(_._1<xyfz).map(_._2).sum
         val Sortedlist = listMessage.sortBy(_._2)(Ordering[Double].reverse)
         var i = 0
         var res = 0D
         while(i< Sortedlist.size){
             val (cur_fx,weight) = Sortedlist(i)
             if(cur_fx < xyfz){
-                res += (cur_fx-xyfz) *weight/totalWeight
+                res += (xyfz-cur_fx) *weight/totalWeight
             }
             i+=1
         }
-//        if((xyfz + res).toInt > 0)
-//            (xyfz + res).toInt
-//        else
-//            xyfz
-        (xyfz + res).toInt
+        (xyfz - res).toInt
     }
+
 
     def AggregateMessage(listMessage: Seq[(Int, Double)]): Int = {
         val totalWeight = listMessage.map(_._2).sum

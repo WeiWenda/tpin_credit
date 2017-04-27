@@ -13,21 +13,25 @@ object MessagePropagation {
     type Path = Seq[(VertexId, Double, Double)]
     type Paths = Seq[Seq[(VertexId, Double, Double)]]
 
-    def computeCI(srclist: Seq[(String, Double)], dstlist: Seq[(String, Double)]): Double = {
+    def computeCI(srclist: Seq[(String, Double)], dstlist: Seq[(String, Double)],kind:Int): Double = {
 
         var score = 0.0
         val srcMap = srclist.toMap
         val dstMap = dstlist.toMap
-        srcMap.keys.toSeq.intersect(dstMap.keys.toSeq).foreach(key =>
-            score += srcMap(key).min(dstMap(key))
-        )
+        if(kind ==1 ){
+            srcMap.keys.toSeq.intersect(dstMap.keys.toSeq).foreach(key =>
+                score += srcMap(key).min(dstMap(key))
+            )
+        }else if (kind ==2){
+            score = srcMap.keys.toSeq.intersect(dstMap.keys.toSeq).size
+        }
         score
     }
 
     //annotation of david:在3个分数之间使用最大值做为控制人亲密度
-    def computeCI(srcAttr: VertexAttr, dstAttr: VertexAttr): Double = {
-        val gd_score = computeCI(srcAttr.gd_list, dstAttr.gd_list)
-        val zrrtz_score = computeCI(srcAttr.zrrtz_list, dstAttr.zrrtz_list)
+    def computeCI(srcAttr: VertexAttr, dstAttr: VertexAttr,kind :Int = 1): Double = {
+        val gd_score = computeCI(srcAttr.gd_list, dstAttr.gd_list,kind)
+        val zrrtz_score = computeCI(srcAttr.zrrtz_list, dstAttr.zrrtz_list,kind)
         var fddbr_score = 0D
         if (srcAttr.fddbr.equals(dstAttr.fddbr)) fddbr_score = 1D
         val toReturn = gd_score.max(zrrtz_score).max(fddbr_score)
@@ -47,18 +51,20 @@ object MessagePropagation {
     }
 
 
+    //annotation of david:概率上限
     def computePl(controllerInterSect: Double, tz_bl: Double, kg_bl: Double, jy_bl: Double) = {
-        var sum = controllerInterSect + tz_bl + kg_bl + jy_bl
-        if (sum > 1)
-            sum = 1
-        sum
-    }
-
-    def computeBel(controllerInterSect: Double, tz_bl: Double, kg_bl: Double, jy_bl: Double) = {
         var max = Seq(controllerInterSect, tz_bl, kg_bl, jy_bl).max
         if (max > 1)
             max = 1
         max
+    }
+
+    //annotation of david:概率下限
+    def computeBel(controllerInterSect: Double, tz_bl: Double, kg_bl: Double, jy_bl: Double) = {
+        var minl0 = Seq(controllerInterSect, tz_bl, kg_bl, jy_bl).filter(_>0).min
+        if (minl0 > 1)
+            minl0 = 1
+        minl0
     }
 
     //annotation of david:决定路径经过哪些邻居,ps:每个企业只影响3家企业
@@ -128,6 +134,8 @@ object MessagePropagation {
         //annotation of david:使用第一种三角范式
         val influenceEdge = influenceOnPath(paths, 1)
         val influenceGraph = Graph(belAndPl.vertices,influenceEdge).persist()
+
+        //annotation of david:滤除影响力过小的边
         val finalInfluenceGraph = influenceInTotal(influenceGraph)
         finalInfluenceGraph
         //finalInfluenceGraph size: vertices:93523 edges:1850050
@@ -138,10 +146,10 @@ object MessagePropagation {
         vattr
     }
 
-    //annotation of david:使用frank t-norm聚合路径上的影响值
+    //annotation of david:使用frank t-norm聚合路径上的影响值，vid,bel,pl
     def combineInfluence(x: (graphx.VertexId, Double, Double), y: (graphx.VertexId, Double, Double), lambda: Int) = {
-        val a = x._2
-        val b = y._2
+        val a = x._3
+        val b = y._3
         var pTrust = 0D
         val unc = x._3 + y._3 - y._2
         if (lambda == 0) pTrust = a.min(b)
