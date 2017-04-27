@@ -169,7 +169,7 @@ object MessagePropagation {
     }
 
     //annotation of david:使用三角范式计算路径上的影响值（包含参照影响逻辑和基础影响逻辑）
-    def influenceOnPath[T<:Iterable[Seq[(graphx.VertexId, Double, Double)]]](paths: RDD[(VertexId,T)], lambda: Int) = {
+    definfluenceOnPath[T<:Iterable[Seq[(graphx.VertexId, Double, Double)]]](paths: RDD[(VertexId,T)], lambda: Int) = {
         val influences = paths.map{case (vid, vattr) =>
                 val DAG = graphReduce(vattr)
                 val influenceSinglePath = DAG.map { path =>
