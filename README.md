@@ -40,7 +40,8 @@ Seq[Seq[(VertexId, Double, Double)]]，两个Double分别是Bel和Pl
 # 4.实验部分
 ## 4.1 问题纳税人定义 SHANNXI.WWD_INFLUENCE_RESULT
 
-> 2014年至2015年稽查表中
-> WFWZLX_DM不为空的企业,wtbz = 'true' 
-> WFWZLX_DM为空的企业,wtbz ='false' 
-> 未出现在2014年至2015年稽查表的企业,wtbz = 'no'
+
+    2014年至2015年稽查表中
+    WFWZLX_DM不为空的企业,wtbz = 'true'
+    WFWZLX_DM为空的企业,wtbz ='false'
+    未出现在2014年至2015年稽查表的企业,wtbz = 'no'
