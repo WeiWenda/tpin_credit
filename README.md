@@ -4,10 +4,12 @@ E={交易，投资、控股}
 # 2.计算影响力网络
 ## 2.1 计算每条边的Bel,Pl
 ### Bel表示影响力下限，表示不少于多大程序的影响，Pl表示影响力上限，表示不多于多大程度的影响
+
  - 将自然人的投资比例、控股比例规范到0-1
  - controllerInterSect = 自然人亲密度，[0,1]
  - Bel =  Seq(controllerInterSect, tz_bl, kg_bl, jy_bl).filter(_>0).min
  - Pl = Seq(controllerInterSect, tz_bl, kg_bl, jy_bl).max
+
 ## 2.2 按Bel选择TopN的邻居
 ## 2.3 获取路径 
 Seq[Seq[(VertexId, Double, Double)]]，两个Double分别是Bel和Pl
