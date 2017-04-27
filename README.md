@@ -15,9 +15,11 @@ E={交易，投资、控股}
 Seq[Seq[(VertexId, Double, Double)]]，两个Double分别是Bel和Pl
 ## 2.4 计算每条路径上的影响值并融合
 ## 2.5 结合自然人亲密度得到影响力网络
+
  - 过滤影响力小于0.01的影响力边
+
 # 3.与信用评分融合
-##　3.1 对已有评分的企业先行修正
+## 3.1 对已有评分的企业先行修正
 
     def AggregateMessage(xyfz: Int, listMessage: scala.Seq[( Int, Double)]): Int = {
         val totalWeight = listMessage.filter(_._1<xyfz).map(_._2).sum
@@ -39,6 +41,6 @@ Seq[Seq[(VertexId, Double, Double)]]，两个Double分别是Bel和Pl
 ## 4.1 问题纳税人定义 SHANNXI.WWD_INFLUENCE_RESULT
 
 > 2014年至2015年稽查表中
-WFWZLX_DM不为空的企业,wtbz = 'true' 
-WFWZLX_DM为空的企业,wtbz ='false' 
-未出现在2014年至2015年稽查表的企业,wtbz = 'no'
+> WFWZLX_DM不为空的企业,wtbz = 'true' 
+> WFWZLX_DM为空的企业,wtbz ='false' 
+> 未出现在2014年至2015年稽查表的企业,wtbz = 'no'
