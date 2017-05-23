@@ -1,4 +1,4 @@
-package wwd.utils;
+package wwd.utils.java;
 
 import java.io.*;
 

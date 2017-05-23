@@ -6,12 +6,25 @@
     </artifacts-to-build>
   </component>
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala" line="115" />
+    <bookmark url="file://$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala" line="121" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee7f05f6-02b3-41ff-9681-b9354a56a564" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/ShannxiInfluence_jar/ShannxiInfluence.jar" afterPath="$PROJECT_DIR$/out/artifacts/ShannxiInfluence_jar/ShannxiInfluence.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ShannxiInfluence.iml" afterPath="$PROJECT_DIR$/ShannxiInfluence.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/oracle.properties" afterPath="$PROJECT_DIR$/res/oracle.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala" afterPath="$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/main/Main.scala" afterPath="$PROJECT_DIR$/src/wwd/main/Main.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/Experiments.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/Experiments.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/InputOutputTools.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/InputOutputTools.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/wwd/utils/CSVProcess.java" afterPath="$PROJECT_DIR$/src/wwd/utils/java/CSVProcess.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/wwd/utils/DataBaseManager.java" afterPath="$PROJECT_DIR$/src/wwd/utils/java/DataBaseManager.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/wwd/utils/Parameters.java" afterPath="$PROJECT_DIR$/src/wwd/utils/java/Parameters.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/wwd/utils/PoolConnection.java" afterPath="$PROJECT_DIR$/src/wwd/utils/java/PoolConnection.java" />
     </list>
     <ignored path="ShannxiInfluence.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,107 +46,7 @@
     <favorites_list name="ShannxiInfluence" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="InputOutputTools.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/wwd/utils/InputOutputTools.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="149" column="20" selection-start-line="149" selection-start-column="12" selection-end-line="149" selection-end-column="20" />
-              <folding>
-                <element signature="n#!!doc;n#InputOutputTools$#0;n#!!top" expanded="false" />
-                <element signature="e#982#1256#0" expanded="false" />
-                <element signature="e#999#1255#0" expanded="false" />
-                <element signature="e#1323#1595#0" expanded="false" />
-                <element signature="e#1340#1594#0" expanded="false" />
-                <element signature="e#1664#1940#0" expanded="false" />
-                <element signature="e#1681#1939#0" expanded="false" />
-                <element signature="e#3947#4344#0" expanded="false" />
-                <element signature="e#4403#4650#0" expanded="false" />
-                <element signature="e#4488#4607#0" expanded="false" />
-                <element signature="e#5577#5803#0" expanded="false" />
-                <element signature="e#6606#6832#0" expanded="false" />
-                <element signature="e#6945#7195#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Experiments.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/wwd/utils/Experiments.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="14" column="20" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OracleDBUtil.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="56" column="59" selection-start-line="56" selection-start-column="59" selection-end-line="56" selection-end-column="59" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="VertexAttr.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/wwd/entity/VertexAttr.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EdgeAttr.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="37" selection-start-line="5" selection-start-column="37" selection-end-line="5" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CombineNSXY.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="32" column="5" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Main.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/wwd/main/Main.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MessagePropagation.scala" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.40856844">
-              <caret line="171" column="8" selection-start-line="171" selection-start-column="8" selection-end-line="171" selection-end-column="8" />
-              <folding>
-                <element signature="e#19#49#0" expanded="true" />
-                <element signature="n#!!doc;n#MessagePropagation$#0;n#!!top" expanded="false" />
-                <element signature="e#2555#2726#0" expanded="false" />
-                <element signature="e#6297#6471#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -149,21 +62,26 @@
         <option value="$PROJECT_DIR$/src/wwd/utils/MessagePropagetion.scala" />
         <option value="$PROJECT_DIR$/res/InputCsv/edges1.csv" />
         <option value="$PROJECT_DIR$/res/InputCsv/edges.csv" />
-        <option value="$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala" />
         <option value="$PROJECT_DIR$/res/InputCsv/vertices.csv" />
         <option value="E:/Downloads/spark/spark-1.5.1/graphx/src/main/scala/org/apache/spark/graphx/impl/GraphImpl.scala" />
         <option value="$PROJECT_DIR$/src/wwd/entity/VertexAttr.scala" />
         <option value="$PROJECT_DIR$/src/wwd/utils/PoolConnection.java" />
         <option value="$PROJECT_DIR$/res/para.properties" />
-        <option value="$PROJECT_DIR$/res/oracle.properties" />
         <option value="$PROJECT_DIR$/src/wwd/utils/DataBaseManager.java" />
         <option value="$PROJECT_DIR$/src/wwd/utils/Parameters.java" />
+        <option value="$PROJECT_DIR$/src/wwd/entity/WholeEdgeAttr.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/entity/WholeVertexAttr.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/utils/xyshow/xyshow.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/utils/xyshow/XYShowTools.scala" />
         <option value="$PROJECT_DIR$/src/wwd/utils/InputOutputTools.scala" />
-        <option value="$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala" />
-        <option value="$PROJECT_DIR$/src/wwd/main/Main.scala" />
-        <option value="$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala" />
-        <option value="$PROJECT_DIR$/src/wwd/utils/Experiments.scala" />
+        <option value="$PROJECT_DIR$/res/oracle.properties" />
+        <option value="$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala" />
         <option value="$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/main/XYShow.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/main/Main.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/utils/Experiments.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala" />
       </list>
     </option>
   </component>
@@ -173,9 +91,9 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1912" />
+    <option name="x" value="67" />
     <option name="y" value="-8" />
-    <option name="width" value="1874" />
+    <option name="width" value="1861" />
     <option name="height" value="1096" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
@@ -203,7 +121,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -266,6 +186,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="utils" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xyshow" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ShannxiInfluence" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shannxiInfluence" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wwd" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -291,8 +237,30 @@
               <option name="myItemId" value="entity" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+          </PATH>
+          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="VertexAttr.scala" />
+              <option name="myItemId" value="ShannxiInfluence" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shannxiInfluence" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wwd" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="entity" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WholeEdgeAttr.scala" />
               <option name="myItemType" value="org.jetbrains.plugins.scala.components.ScalaDefsProjectViewProvider$ScalaFileTreeNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -318,7 +286,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="EdgeAttr.scala" />
+              <option name="myItemId" value="VertexAttr.scala" />
               <option name="myItemType" value="org.jetbrains.plugins.scala.components.ScalaDefsProjectViewProvider$ScalaFileTreeNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -370,8 +338,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -383,25 +349,26 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15196393" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="js-jscs-nodeInterpreter" value="D:\Program Files\nodejs\node.exe" />
     <property name="last_opened_file_path" value="E:/EclipseWorkspace/csv2D3csv" />
-    <property name="settings.editor.selected.configurable" value="project.propGUI" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\IDEAWorkSpace\shannxiInfluence\src\wwd\entity" />
       <recent name="E:\IDEAWorkSpace\shannxiInfluence\res" />
+      <recent name="E:\IDEAWorkSpace\shannxiInfluence\src\wwd\utils" />
+      <recent name="E:\IDEAWorkSpace\shannxiInfluence\res\InputCsv" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="wwd.utils" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\IDEAWorkSpace\shannxiInfluence\res" />
-      <recent name="E:\IDEAWorkSpace\shannxiInfluence\src\wwd\utils" />
-      <recent name="E:\IDEAWorkSpace\shannxiInfluence\res\InputCsv" />
     </key>
   </component>
   <component name="RunManager">
@@ -892,41 +859,49 @@
       <workItem from="1492501053536" duration="9618000" />
       <workItem from="1492995679107" duration="34340000" />
       <workItem from="1493300075139" duration="1119000" />
-      <workItem from="1493303385185" duration="16000" />
+      <workItem from="1493303385185" duration="2466000" />
+      <workItem from="1493694357473" duration="18387000" />
+      <workItem from="1494316316512" duration="625000" />
+      <workItem from="1494405325361" duration="37941000" />
+      <workItem from="1494578263733" duration="8541000" />
+      <workItem from="1494594205150" duration="3967000" />
+      <workItem from="1494833105364" duration="9561000" />
+      <workItem from="1494983716387" duration="11648000" />
+      <workItem from="1495416039731" duration="26094000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="219006000" />
+    <option name="totallyTimeSpent" value="338220000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1912" y="-8" width="1874" height="1096" extended-state="6" />
-    <editor active="true" />
+    <frame x="67" y="-8" width="1861" height="1096" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1643002" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16038752" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1598916" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26673427" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" x="167" y="92" width="1661" height="896" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -943,7 +918,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -952,84 +927,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="113" column="8" selection-start-line="113" selection-start-column="8" selection-end-line="113" selection-end-column="8" />
-          <folding>
-            <element signature="e#19#49#0" expanded="true" />
-            <element signature="n#!!doc;n#MessagePropagation$#0;n#!!top" expanded="false" />
-            <element signature="e#2555#2726#0" expanded="false" />
-            <element signature="e#6297#6471#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="20" selection-start-line="5" selection-start-column="20" selection-end-line="5" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#19#49#0" expanded="true" />
-            <element signature="n#!!doc;n#MessagePropagation$#0;n#!!top" expanded="false" />
-            <element signature="e#2555#2726#0" expanded="false" />
-            <element signature="e#6297#6471#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/Experiments.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/entity/VertexAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/InputOutputTools.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc;n#InputOutputTools$#0;n#!!top" expanded="false" />
-            <element signature="e#982#1256#0" expanded="false" />
-            <element signature="e#999#1255#0" expanded="false" />
-            <element signature="e#1323#1595#0" expanded="false" />
-            <element signature="e#1340#1594#0" expanded="false" />
-            <element signature="e#1664#1940#0" expanded="false" />
-            <element signature="e#1681#1939#0" expanded="false" />
-            <element signature="e#3947#4344#0" expanded="false" />
-            <element signature="e#4403#4650#0" expanded="false" />
-            <element signature="e#4488#4607#0" expanded="false" />
-            <element signature="e#5577#5803#0" expanded="false" />
-            <element signature="e#6606#6832#0" expanded="false" />
-            <element signature="e#6945#7195#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1041,7 +938,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="78" selection-start-line="4" selection-start-column="78" selection-end-line="4" selection-end-column="78" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1050,19 +946,29 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="e#19#53#0" expanded="true" />
             <element signature="n#!!doc;n#InputOutputTools$#0;n#!!top" expanded="false" />
-            <element signature="e#982#1256#0" expanded="false" />
-            <element signature="e#999#1255#0" expanded="false" />
-            <element signature="e#1323#1595#0" expanded="false" />
-            <element signature="e#1340#1594#0" expanded="false" />
-            <element signature="e#1664#1940#0" expanded="false" />
-            <element signature="e#1681#1939#0" expanded="false" />
-            <element signature="e#3947#4344#0" expanded="false" />
-            <element signature="e#4403#4650#0" expanded="false" />
-            <element signature="e#4488#4607#0" expanded="false" />
-            <element signature="e#5577#5803#0" expanded="false" />
-            <element signature="e#6606#6832#0" expanded="false" />
-            <element signature="e#6945#7195#0" expanded="false" />
+            <element signature="e#1483#1810#0" expanded="false" />
+            <element signature="e#4486#4700#0" expanded="false" />
+            <element signature="e#4864#5078#0" expanded="false" />
+            <element signature="e#8018#8289#0" expanded="false" />
+            <element signature="e#8035#8288#0" expanded="false" />
+            <element signature="e#8358#8632#0" expanded="false" />
+            <element signature="e#8375#8631#0" expanded="false" />
+            <element signature="e#8699#8971#0" expanded="false" />
+            <element signature="e#8716#8970#0" expanded="false" />
+            <element signature="e#9040#9316#0" expanded="false" />
+            <element signature="e#9057#9315#0" expanded="false" />
+            <element signature="e#10883#11210#0" expanded="false" />
+            <element signature="e#12953#13179#0" expanded="false" />
+            <element signature="e#15737#16265#0" expanded="false" />
+            <element signature="e#16271#16576#0" expanded="false" />
+            <element signature="e#17099#18739#0" expanded="false" />
+            <element signature="e#17603#18359#0" expanded="false" />
+            <element signature="e#18444#18702#0" expanded="false" />
+            <element signature="e#18745#18941#0" expanded="false" />
+            <element signature="e#18835#18866#0" expanded="false" />
+            <element signature="e#18947#19131#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1078,7 +984,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="78" selection-start-line="4" selection-start-column="78" selection-end-line="4" selection-end-column="78" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1087,19 +992,29 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
           <folding>
+            <element signature="e#19#53#0" expanded="true" />
             <element signature="n#!!doc;n#InputOutputTools$#0;n#!!top" expanded="false" />
-            <element signature="e#982#1256#0" expanded="false" />
-            <element signature="e#999#1255#0" expanded="false" />
-            <element signature="e#1323#1595#0" expanded="false" />
-            <element signature="e#1340#1594#0" expanded="false" />
-            <element signature="e#1664#1940#0" expanded="false" />
-            <element signature="e#1681#1939#0" expanded="false" />
-            <element signature="e#3947#4344#0" expanded="false" />
-            <element signature="e#4403#4650#0" expanded="false" />
-            <element signature="e#4488#4607#0" expanded="false" />
-            <element signature="e#5577#5803#0" expanded="false" />
-            <element signature="e#6606#6832#0" expanded="false" />
-            <element signature="e#6945#7195#0" expanded="false" />
+            <element signature="e#1483#1810#0" expanded="false" />
+            <element signature="e#4486#4700#0" expanded="false" />
+            <element signature="e#4864#5078#0" expanded="false" />
+            <element signature="e#8018#8289#0" expanded="false" />
+            <element signature="e#8035#8288#0" expanded="false" />
+            <element signature="e#8358#8632#0" expanded="false" />
+            <element signature="e#8375#8631#0" expanded="false" />
+            <element signature="e#8699#8971#0" expanded="false" />
+            <element signature="e#8716#8970#0" expanded="false" />
+            <element signature="e#9040#9316#0" expanded="false" />
+            <element signature="e#9057#9315#0" expanded="false" />
+            <element signature="e#10883#11210#0" expanded="false" />
+            <element signature="e#12953#13179#0" expanded="false" />
+            <element signature="e#15737#16265#0" expanded="false" />
+            <element signature="e#16271#16576#0" expanded="false" />
+            <element signature="e#17099#18739#0" expanded="false" />
+            <element signature="e#17603#18359#0" expanded="false" />
+            <element signature="e#18444#18702#0" expanded="false" />
+            <element signature="e#18745#18941#0" expanded="false" />
+            <element signature="e#18835#18866#0" expanded="false" />
+            <element signature="e#18947#19131#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1115,7 +1030,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1168,7 +1082,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/CSVProcess.java">
+    <entry file="file://$PROJECT_DIR$/src/wwd/utils/java/CSVProcess.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.18808778">
           <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
@@ -1280,99 +1194,176 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/utils/java/DataBaseManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.22570533">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/utils/java/PoolConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.11285266">
+          <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://E:/Downloads/spark/spark-1.6.1/graphx/src/main/scala/org/apache/spark/graphx/Edge.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3322785">
+          <caret line="58" column="7" selection-start-line="58" selection-start-column="7" selection-end-line="58" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://E:/Downloads/spark/spark-1.6.1/graphx/src/main/scala/org/apache/spark/graphx/EdgeRDD.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34169278">
+          <caret line="97" column="7" selection-start-line="97" selection-start-column="7" selection-end-line="97" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files (x86)/scala/lib/scala-library.jar!/scala/Tuple3.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.018808777">
+          <caret line="1" column="37" selection-start-line="1" selection-start-column="37" selection-end-line="1" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/entity/WholeVertexAttr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="18" selection-start-line="0" selection-start-column="18" selection-end-line="0" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://E:/Downloads/spark/spark-1.6.1/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/jdbc/JdbcUtils.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.5">
-          <caret line="99" column="60" selection-start-line="99" selection-start-column="60" selection-end-line="99" selection-end-column="60" />
+        <state vertical-scroll-proportion="0.52978057">
+          <caret line="262" column="6" selection-start-line="262" selection-start-column="6" selection-end-line="262" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/res/oracle.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.075235106">
-          <caret line="4" column="28" selection-start-line="4" selection-start-column="28" selection-end-line="4" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/DataBaseManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="6" selection-start-line="22" selection-start-column="6" selection-end-line="22" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/PoolConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="34" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/Parameters.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24783862">
-          <caret line="27" column="46" selection-start-line="27" selection-start-column="46" selection-end-line="27" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="59" selection-start-line="56" selection-start-column="59" selection-end-line="56" selection-end-column="59" />
+        <state vertical-scroll-proportion="0.037617553">
+          <caret line="2" column="36" selection-start-line="2" selection-start-column="36" selection-end-line="2" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala">
+    <entry file="file://$PROJECT_DIR$/src/wwd/utils/java/Parameters.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="32" column="5" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
+          <caret line="18" column="11" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/main/Main.scala">
+    <entry file="file://$PROJECT_DIR$/src/wwd/entity/WholeEdgeAttr.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="37" selection-start-line="5" selection-start-column="37" selection-end-line="5" selection-end-column="37" />
+        <state vertical-scroll-proportion="0.9283019">
+          <caret line="41" column="32" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/wwd/entity/VertexAttr.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
+        <state vertical-scroll-proportion="0.09056604">
+          <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/utils/xyshow/XYShowTools.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="74" column="32" selection-start-line="74" selection-start-column="32" selection-end-line="74" selection-end-column="32" />
+          <folding>
+            <element signature="e#26#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/main/XYShow.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
+          <folding>
+            <element signature="e#18#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/main/Main.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="36" column="35" selection-start-line="36" selection-start-column="35" selection-end-line="36" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7924528">
+          <caret line="35" column="36" selection-start-line="35" selection-start-column="36" selection-end-line="35" selection-end-column="36" />
+          <folding>
+            <element signature="e#20#54#0" expanded="true" />
+            <element signature="e#1234#2147#0" expanded="false" />
+            <element signature="e#2713#4087#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="29" column="67" selection-start-line="29" selection-start-column="67" selection-end-line="29" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="34" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
+          <folding>
+            <element signature="e#19#49#0" expanded="true" />
+            <element signature="n#!!doc;n#MessagePropagation$#0;n#!!top" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/wwd/utils/InputOutputTools.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="149" column="20" selection-start-line="149" selection-start-column="12" selection-end-line="149" selection-end-column="20" />
+          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
           <folding>
+            <element signature="e#19#53#0" expanded="true" />
             <element signature="n#!!doc;n#InputOutputTools$#0;n#!!top" expanded="false" />
-            <element signature="e#982#1256#0" expanded="false" />
-            <element signature="e#999#1255#0" expanded="false" />
-            <element signature="e#1323#1595#0" expanded="false" />
-            <element signature="e#1340#1594#0" expanded="false" />
-            <element signature="e#1664#1940#0" expanded="false" />
-            <element signature="e#1681#1939#0" expanded="false" />
-            <element signature="e#3947#4344#0" expanded="false" />
-            <element signature="e#4403#4650#0" expanded="false" />
-            <element signature="e#4488#4607#0" expanded="false" />
-            <element signature="e#5577#5803#0" expanded="false" />
-            <element signature="e#6606#6832#0" expanded="false" />
-            <element signature="e#6945#7195#0" expanded="false" />
+            <element signature="e#1483#1810#0" expanded="false" />
+            <element signature="e#4486#4700#0" expanded="false" />
+            <element signature="e#4864#5078#0" expanded="false" />
+            <element signature="e#8018#8289#0" expanded="false" />
+            <element signature="e#8035#8288#0" expanded="false" />
+            <element signature="e#8358#8632#0" expanded="false" />
+            <element signature="e#8375#8631#0" expanded="false" />
+            <element signature="e#8699#8971#0" expanded="false" />
+            <element signature="e#8716#8970#0" expanded="false" />
+            <element signature="e#9040#9316#0" expanded="false" />
+            <element signature="e#9057#9315#0" expanded="false" />
+            <element signature="e#10883#11210#0" expanded="false" />
+            <element signature="e#12953#13179#0" expanded="false" />
+            <element signature="e#15737#16265#0" expanded="false" />
+            <element signature="e#16271#16576#0" expanded="false" />
+            <element signature="e#17099#18739#0" expanded="false" />
+            <element signature="e#17603#18359#0" expanded="false" />
+            <element signature="e#18444#18702#0" expanded="false" />
+            <element signature="e#18745#18941#0" expanded="false" />
+            <element signature="e#18835#18866#0" expanded="false" />
+            <element signature="e#18947#19131#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1380,21 +1371,18 @@
     <entry file="file://$PROJECT_DIR$/src/wwd/utils/Experiments.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="20" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
-          <folding />
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding>
+            <element signature="e#19#60#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala">
+    <entry file="file://$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.40856844">
-          <caret line="171" column="8" selection-start-line="171" selection-start-column="8" selection-end-line="171" selection-end-column="8" />
-          <folding>
-            <element signature="e#19#49#0" expanded="true" />
-            <element signature="n#!!doc;n#MessagePropagation$#0;n#!!top" expanded="false" />
-            <element signature="e#2555#2726#0" expanded="false" />
-            <element signature="e#6297#6471#0" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="0.61509436">
+          <caret line="57" column="21" selection-start-line="57" selection-start-column="21" selection-end-line="57" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>

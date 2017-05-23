@@ -33,7 +33,7 @@ object CombineNSXY {
     }
 
     //annotation of david:先对已有评分的节点进行修正，（只拉低）
-    def run(influenceGraph: Graph[Int, Double]):  Graph[Int, Double] ={
+    def run(influenceGraph: Graph[Int, Double]):  Graph[(Int,Int), Double] ={
         val fzMessage = influenceGraph.aggregateMessages[Seq[(Int,Double)]](ctx =>
             if(ctx.srcAttr > 0 && ctx.dstAttr > 0){
                 ctx.sendToDst(Seq((ctx.srcAttr,ctx.attr)))
@@ -42,21 +42,21 @@ object CombineNSXY {
         val fixAlreadyGraph = influenceGraph.outerJoinVertices(fzMessage){
             case(vid,vattr,listMessage) =>
                 if (listMessage.isEmpty)
-                    vattr
+                    (vattr,vattr)
                 else{
-                    AggregateMessage(vattr,listMessage.get)
+                    (vattr, AggregateMessage(vattr,listMessage.get))
                 }
         }.cache()
         val fzMessage2 = fixAlreadyGraph.aggregateMessages[Seq[(Int,Double)]](ctx =>
-            if(ctx.dstAttr == 0 ) {
-                ctx.sendToDst(Seq((ctx.srcAttr, ctx.attr)))
+            if(ctx.dstAttr._1 == 0 ) {
+                ctx.sendToDst(Seq((ctx.srcAttr._2, ctx.attr)))
             },_++_).cache()
         val fixNotyetGraph = fixAlreadyGraph.outerJoinVertices(fzMessage2){
             case(vid,vattr,listMessage) =>
                 if (listMessage.isEmpty)
                     vattr
                 else{
-                    AggregateMessage(listMessage.get)
+                    (vattr._1,AggregateMessage(listMessage.get))
                 }
         }.cache()
         fzMessage.unpersist(blocking = false)

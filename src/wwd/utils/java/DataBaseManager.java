@@ -1,4 +1,4 @@
-package wwd.utils;
+package wwd.utils.java;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import wwd.utils.PoolConnection;
+import wwd.utils.java.PoolConnection;
 
 //import java.sql.DriverManager;
 
