@@ -10,21 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee7f05f6-02b3-41ff-9681-b9354a56a564" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/ShannxiInfluence_jar/ShannxiInfluence.jar" afterPath="$PROJECT_DIR$/out/artifacts/ShannxiInfluence_jar/ShannxiInfluence.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ShannxiInfluence.iml" afterPath="$PROJECT_DIR$/ShannxiInfluence.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/oracle.properties" afterPath="$PROJECT_DIR$/res/oracle.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala" afterPath="$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/main/Main.scala" afterPath="$PROJECT_DIR$/src/wwd/main/Main.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/Experiments.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/Experiments.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/InputOutputTools.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/InputOutputTools.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala" afterPath="$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/wwd/utils/CSVProcess.java" afterPath="$PROJECT_DIR$/src/wwd/utils/java/CSVProcess.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/wwd/utils/DataBaseManager.java" afterPath="$PROJECT_DIR$/src/wwd/utils/java/DataBaseManager.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/wwd/utils/Parameters.java" afterPath="$PROJECT_DIR$/src/wwd/utils/java/Parameters.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/wwd/utils/PoolConnection.java" afterPath="$PROJECT_DIR$/src/wwd/utils/java/PoolConnection.java" />
     </list>
     <ignored path="ShannxiInfluence.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -46,7 +32,28 @@
     <favorites_list name="ShannxiInfluence" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="CombineNSXY.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="XYShow.scala" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/wwd/main/XYShow.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.2264151">
+              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -77,11 +84,11 @@
         <option value="$PROJECT_DIR$/res/oracle.properties" />
         <option value="$PROJECT_DIR$/src/wwd/entity/EdgeAttr.scala" />
         <option value="$PROJECT_DIR$/src/wwd/utils/MessagePropagation.scala" />
-        <option value="$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala" />
         <option value="$PROJECT_DIR$/src/wwd/main/XYShow.scala" />
         <option value="$PROJECT_DIR$/src/wwd/main/Main.scala" />
         <option value="$PROJECT_DIR$/src/wwd/utils/Experiments.scala" />
         <option value="$PROJECT_DIR$/src/wwd/utils/OracleDBUtil.scala" />
+        <option value="$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala" />
       </list>
     </option>
   </component>
@@ -867,16 +874,16 @@
       <workItem from="1494594205150" duration="3967000" />
       <workItem from="1494833105364" duration="9561000" />
       <workItem from="1494983716387" duration="11648000" />
-      <workItem from="1495416039731" duration="26094000" />
+      <workItem from="1495416039731" duration="33806000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="338220000" />
+    <option name="totallyTimeSpent" value="345932000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="-8" width="1861" height="1096" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -889,7 +896,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1598916" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1598916" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -946,7 +953,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#19#53#0" expanded="true" />
+            <element signature="e#19#53#0" expanded="false" />
             <element signature="n#!!doc;n#InputOutputTools$#0;n#!!top" expanded="false" />
             <element signature="e#1483#1810#0" expanded="false" />
             <element signature="e#4486#4700#0" expanded="false" />
@@ -992,7 +999,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
           <folding>
-            <element signature="e#19#53#0" expanded="true" />
+            <element signature="e#19#53#0" expanded="false" />
             <element signature="n#!!doc;n#InputOutputTools$#0;n#!!top" expanded="false" />
             <element signature="e#1483#1810#0" expanded="false" />
             <element signature="e#4486#4700#0" expanded="false" />
@@ -1282,17 +1289,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="74" column="32" selection-start-line="74" selection-start-column="32" selection-end-line="74" selection-end-column="32" />
           <folding>
-            <element signature="e#26#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/wwd/main/XYShow.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
-          <folding>
-            <element signature="e#18#51#0" expanded="true" />
+            <element signature="e#26#58#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1341,7 +1338,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
           <folding>
-            <element signature="e#19#53#0" expanded="true" />
+            <element signature="e#19#53#0" expanded="false" />
             <element signature="n#!!doc;n#InputOutputTools$#0;n#!!top" expanded="false" />
             <element signature="e#1483#1810#0" expanded="false" />
             <element signature="e#4486#4700#0" expanded="false" />
@@ -1380,8 +1377,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/wwd/utils/CombineNSXY.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.61509436">
-          <caret line="57" column="21" selection-start-line="57" selection-start-column="21" selection-end-line="57" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wwd/main/XYShow.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2264151">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
           <folding />
         </state>
       </provider>
