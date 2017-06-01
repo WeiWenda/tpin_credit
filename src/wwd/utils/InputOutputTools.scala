@@ -31,13 +31,14 @@ object InputOutputTools {
         val tzf_DF = sqlContext.read.format("jdbc").options(dbstring + (("dbtable", "WWD_NSR_TZF"))).load()
         val trade_DF = sqlContext.read.format("jdbc").options(dbstring + (("dbtable", "WWD_XFNSR_GFNSR"))).load()
 
-        val XYJB_DF = sqlContext.read.format("jdbc").options(dbstring+(("dbtable","XY_NSR_XYJB"))).load()
-        val xyjb = XYJB_DF.select("NSRDZDAH", "XYGL_XYJB_DM", "FZ").
-            rdd.map(row =>
+        val XYJB_DF = sqlContext.read.format("jdbc").options(dbstring+(("dbtable","WWD_GROUNDTRUTH"))).load()
+        val xyjb = XYJB_DF.select("VERTEXID", "XYGL_XYJB_DM", "FZ","WTBZ").rdd.
+            filter(row =>  !(row.getAs[String]("XYGL_XYJB_DM") == "A" && row.getAs[String]("WTBZ")=="Y")).
+            map(row =>
             if (row.getAs[String]("XYGL_XYJB_DM") == "D")
-                (row.getAs[BigDecimal]("NSRDZDAH").toString(), (40, row.getAs[String]("XYGL_XYJB_DM")))
+                (row.getAs[BigDecimal]("VERTEXID").longValue(), (40, row.getAs[String]("XYGL_XYJB_DM")))
             else
-                (row.getAs[BigDecimal]("NSRDZDAH").toString(), (row.getAs[BigDecimal]("FZ").intValue(), row.getAs[String]("XYGL_XYJB_DM"))))
+                (row.getAs[BigDecimal]("VERTEXID").longValue(), (row.getAs[BigDecimal]("FZ").intValue(), row.getAs[String]("XYGL_XYJB_DM"))))
 
         //annotation of david:计算点表
         //unionAll不去重
@@ -73,8 +74,8 @@ object InputOutputTools {
                 rdd.map(row =>
                 (row.getAs[BigDecimal]("VERTEXID").longValue(),WholeVertexAttr(row.getAs[String]("NSRMC"),row.getAs[BigDecimal]("NSRDZDAH").toString, false))
             )).
-            keyBy(_._2.nsrsbh).leftOuterJoin(xyjb).
-            map { case (dzdah, ((vid, vattr), opt_fz_dm)) =>
+            leftOuterJoin(xyjb).
+            map { case (vid, (vattr, opt_fz_dm)) =>
                 if (!opt_fz_dm.isEmpty) {
                     vattr.xyfz = opt_fz_dm.get._1
                     vattr.xydj = opt_fz_dm.get._2

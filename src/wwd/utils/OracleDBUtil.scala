@@ -97,19 +97,22 @@ object OracleDBUtil {
         JdbcUtils.saveTable(edgeDataFrame, url, dst, properties)
     }
 
-    def saveFinalScore(finalScore: Graph[(Int,Int), Double],sqlContext: SQLContext,edge_dst:String="WWD_XYCD_EDGE_FINAL",vertex_dst:String="WWD_XYCD_VERTEX_FINAL"): Unit = {
-        DataBaseManager.execute("truncate table " + edge_dst)
-        val schema = StructType(
-            List(
-                StructField("source", LongType, true),
-                StructField("target", LongType, true),
-                StructField("FINAL_INFLUENCE", DoubleType, true)
+    def saveFinalScore(finalScore: Graph[(Int,Int), Double],sqlContext: SQLContext,
+                       edge_dst:String="WWD_XYCD_EDGE_FINAL",vertex_dst:String="WWD_XYCD_VERTEX_FINAL",bypass:Boolean=false): Unit = {
+        if(!bypass){
+            DataBaseManager.execute("truncate table " + edge_dst)
+            val schema = StructType(
+                List(
+                    StructField("source", LongType, true),
+                    StructField("target", LongType, true),
+                    StructField("FINAL_INFLUENCE", DoubleType, true)
+                )
             )
-        )
-        val rowRDD = finalScore.edges.map(e=> Row(e.srcId,e.dstId,e.attr)).distinct()
+            val rowRDD = finalScore.edges.map(e=> Row(e.srcId,e.dstId,e.attr)).distinct()
 
-        val edgeDataFrame = sqlContext.createDataFrame(rowRDD, schema).repartition(3)
-        JdbcUtils.saveTable(edgeDataFrame, url, edge_dst, properties)
+            val edgeDataFrame = sqlContext.createDataFrame(rowRDD, schema).repartition(3)
+            JdbcUtils.saveTable(edgeDataFrame, url, edge_dst, properties)
+        }
 
         DataBaseManager.execute("truncate table " + vertex_dst)
         val schema1 = StructType(
@@ -161,7 +164,6 @@ object OracleDBUtil {
             map(p => Row(p._1,p._2,p._3,p._4))
         val vertexDataFrame = sqlContext.createDataFrame(rowRDD1, schema1).repartition(3)
         JdbcUtils.saveTable(vertexDataFrame, url, vertex_dst, properties)
-
 
     }
 

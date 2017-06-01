@@ -92,7 +92,7 @@ object MessagePropagation {
         // 发送路径
         def sendPaths(edge: EdgeContext[Paths, InfluenceEdgeAttr, Paths],
                       length: Int): Unit = {
-            val satisfied = edge.dstAttr.filter(_.size == length).filter(e=> !e.map(_._1).contains(edge.srcId))
+            val satisfied = edge.dstAttr.filter(e=> e.size == length).filter(e=> !e.map(_._1).contains(edge.srcId))
             if (satisfied.size > 0) {
                 // 向终点发送顶点路径集合
                 edge.sendToSrc(satisfied.map(Seq((edge.srcId,edge.attr.src, edge.attr.bel, edge.attr.pl)) ++ _))
@@ -119,7 +119,7 @@ object MessagePropagation {
         preproccessedGraph.vertices
     }
     //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
-    def run(tpin: Graph[VertexAttr, EdgeAttr],sqlContext: SQLContext) = {
+    def run(tpin: Graph[VertexAttr, EdgeAttr],sqlContext: SQLContext,bypass:Boolean=false) = {
         // tpin size: vertices:93523 edges:633300
         val belAndPl = tpin.mapTriplets { case triplet =>
 //            val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
@@ -138,9 +138,9 @@ object MessagePropagation {
         //paths:93523
 
         //annotation of david:使用第一种三角范式
-        val influenceEdge = influenceOnPath(paths, 1,sqlContext)
+        val influenceEdge = influenceOnPath(paths, 1,sqlContext,bypass)
         val influenceGraph = Graph(belAndPl.vertices, influenceEdge).persist()
-
+ 
         //annotation of david:滤除影响力过小的边
         val finalInfluenceGraph = influenceInTotal(influenceGraph)
         finalInfluenceGraph
@@ -176,18 +176,19 @@ object MessagePropagation {
     }
 
     //annotation of david:使用三角范式计算路径上的影响值（包含参照影响逻辑和基础影响逻辑）
-    def influenceOnPath[T <: Iterable[Seq[(graphx.VertexId,String, Double, Double)]]](paths: RDD[(VertexId, T)], lambda: Int,sqlContext: SQLContext) = {
-        val toOutput = paths.flatMap{case   (vid,vattr) =>
+    def influenceOnPath[T <: Iterable[Seq[(graphx.VertexId,String, Double, Double)]]](paths: RDD[(VertexId, T)], lambda: Int,sqlContext: SQLContext,bypass:Boolean) = {
+        if(!bypass){
+            val toOutput = paths.flatMap{case   (vid,vattr) =>
                 val DAG=graphReduce(vattr)
-            DAG.filter{ case path =>
-                val res = path.reduceLeft((a, b) => combineInfluence(a, b, lambda))
-                //annotation of david:pTrust使用t-norm，unc使用pl-bel求平均
-                // 只输出大于0.1pTrust的路径
-                res._3 > 0.1
+                DAG.filter{ case path =>
+                    val res = path.reduceLeft((a, b) => combineInfluence(a, b, lambda))
+                    //annotation of david:pTrust使用t-norm，unc使用pl-bel求平均
+                    // 只输出大于0.1pTrust的路径
+                    res._3 > 0.1
+                }
             }
+            OracleDBUtil.savePath(toOutput,sqlContext)
         }
-        OracleDBUtil.savePath(toOutput,sqlContext)
-
         val influences = paths.map { case (vid, vattr) =>
             val DAG = graphReduce(vattr)
             val influenceSinglePath = DAG.map { path =>
