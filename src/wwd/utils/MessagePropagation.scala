@@ -1,5 +1,6 @@
 package wwd.utils
 
+import breeze.math.MutablizingAdaptor.Lambda2
 import org.apache.spark.graphx
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
@@ -119,7 +120,7 @@ object MessagePropagation {
         preproccessedGraph.vertices
     }
     //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
-    def run(tpin: Graph[VertexAttr, EdgeAttr],sqlContext: SQLContext,bypass:Boolean=false) = {
+    def run(tpin: Graph[VertexAttr, EdgeAttr],sqlContext: SQLContext,bypass:Boolean=false,lambda:Int=1)= {
         // tpin size: vertices:93523 edges:633300
         val belAndPl = tpin.mapTriplets { case triplet =>
 //            val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
@@ -138,7 +139,7 @@ object MessagePropagation {
         //paths:93523
 
         //annotation of david:使用第一种三角范式
-        val influenceEdge = influenceOnPath(paths, 1,sqlContext,bypass)
+        val influenceEdge = influenceOnPath(paths,lambda,sqlContext,bypass)
         val influenceGraph = Graph(belAndPl.vertices, influenceEdge).persist()
  
         //annotation of david:滤除影响力过小的边
@@ -154,6 +155,7 @@ object MessagePropagation {
 
     //annotation of david:使用frank t-norm聚合路径上的影响值，vid,bel,pl
     def combineInfluence(x: (graphx.VertexId,String, Double, Double), y: (graphx.VertexId,String, Double, Double), lambda: Int) = {
+        val plambda = 0.001
         val a = x._4
         val b = y._4
         var pTrust = 0D
@@ -161,7 +163,8 @@ object MessagePropagation {
         if (lambda == 0) pTrust = a.min(b)
         else if (lambda == 1) pTrust = a * b
         else if (lambda == Integer.MAX_VALUE) pTrust = (a + b - 1).max(0.0)
-        else pTrust = Math.log(1 + (((Math.pow(lambda, a) - 1) * ((Math.pow(lambda, b) - 1))) / (lambda - 1))) / Math.log(lambda)
+        else if (lambda == 2) pTrust = (a*b)/(a+b-a*b)
+        else pTrust = Math.log(1 + (((Math.pow(plambda, a) - 1) * ((Math.pow(plambda, b) - 1))) / (plambda - 1))) / Math.log(plambda)
         (y._1, "",pTrust, unc)
     }
 

@@ -30,7 +30,8 @@ class WholeEdgeAttr(var w_control: Double,
 
     //annotation of david:互锁边标识位
     var is_IL: Boolean = false;
-    lazy val w_IL = if (is_IL) 1.0 else 0.0
+    var w_IL:Double = 0D;
+//    lazy val w_IL = if (is_IL) 1.0 else 0.0
 
     //annotation of david:前件路径
     def isAntecedent(weight: Double=0.0, justGD :Boolean = false ): Boolean = {
