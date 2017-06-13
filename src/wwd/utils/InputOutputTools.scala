@@ -34,10 +34,11 @@ object InputOutputTools {
         val XYJB_DF = sqlContext.read.format("jdbc").options(dbstring+(("dbtable","WWD_GROUNDTRUTH"))).load()
         val xyjb = XYJB_DF.select("VERTEXID", "XYGL_XYJB_DM", "FZ","WTBZ").rdd.
             filter(row =>  !(row.getAs[String]("XYGL_XYJB_DM") == "A" && row.getAs[String]("WTBZ")=="Y")).
+//            filter(row =>  row.getAs[String]("XYGL_XYJB_DM") != "A" ).
             map(row =>
-            if (row.getAs[String]("XYGL_XYJB_DM") == "D")
-                (row.getAs[BigDecimal]("VERTEXID").longValue(), (40, row.getAs[String]("XYGL_XYJB_DM")))
-            else
+//            if (row.getAs[String]("XYGL_XYJB_DM") == "D")
+//                (row.getAs[BigDecimal]("VERTEXID").longValue(), (40, row.getAs[String]("XYGL_XYJB_DM")))
+//            else
                 (row.getAs[BigDecimal]("VERTEXID").longValue(), (row.getAs[BigDecimal]("FZ").intValue(), row.getAs[String]("XYGL_XYJB_DM"))))
 
         //annotation of david:计算点表
