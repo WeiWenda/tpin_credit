@@ -34,9 +34,9 @@ object Main{
         val tpin1 = InputOutputTools.getFromObjectFile[VertexAttr,EdgeAttr](sc,"/tpin/wwd/influence/vertices","/tpin/wwd/influence/edges")
 
         //annotation of david:影响力网络构建成功 influenceGraph: Graph[Int, Double]，点属性为信用评分，边属性为影响力值
-        val influenceGraph = MessagePropagation.run(tpin1,hiveContext,bypass=true).mapVertices((vid,vattr)=>vattr.xyfz)
+        val influenceGraph = MessagePropagation.run(tpin1,hiveContext,bypass=true).mapVertices((vid,vattr)=>(vattr.xyfz,vattr.wtbz))
         InputOutputTools.saveAsObjectFile(influenceGraph,sc,"/tpin/wwd/influence/inf_vertices","/tpin/wwd/influence/inf_edges")
-        val influenceGraph1 = InputOutputTools.getFromObjectFile[Int,Double](sc,"/tpin/wwd/influence/inf_vertices","/tpin/wwd/influence/inf_edges")
+        val influenceGraph1 = InputOutputTools.getFromObjectFile[(Int,Boolean),Double](sc,"/tpin/wwd/influence/inf_vertices","/tpin/wwd/influence/inf_edges")
 
         //annotation of david:修正后听影响力网络 vertices:93523 edges:1850050
         // fixedGraph: Graph[Int, Double] 点属性为修正后的信用评分，边属性仍为影响力值
@@ -44,7 +44,9 @@ object Main{
 
         val outputPaths = Seq("/tpin/wwd/influence/fixed_vertices","/tpin/wwd/influence/fixed_edges")
         InputOutputTools.saveAsObjectFile(fixedGraph,sc,outputPaths(0),outputPaths(1))
-        val finalScore = InputOutputTools.getFromObjectFile[(Int,Int),Double](sc,"/tpin/wwd/influence/fixed_vertices","/tpin/wwd/influence/fixed_edges")
+        val finalScore = InputOutputTools.getFromObjectFile[(Int,Int,Boolean),Double](sc,"/tpin/wwd/influence/fixed_vertices","/tpin/wwd/influence/fixed_edges")
+
+        Experiments.computePref_new(finalScore)
 
         OracleDBUtil.saveFinalScore(finalScore,hiveContext,vertex_dst ="WWD_INFLUENCE_RESULT",bypass = true)
 

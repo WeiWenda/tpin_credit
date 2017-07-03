@@ -1,5 +1,7 @@
 package wwd.entity
 
+import java.text.DecimalFormat
+
 /**
   * Created by weiwenda on 2017/3/15.
   */
@@ -9,7 +11,23 @@ class EdgeAttr extends Serializable {
     var kg_bl: Double = 0.0
     var il_bl: Double = 0.0
 
-    override def toString = s"EdgeAttr($tz_bl, $jy_bl, $kg_bl,$il_bl)"
+    override def toString(): String = {
+        var toReturn = ""
+        val formater = new DecimalFormat("#.###")
+        if(il_bl > 0){
+            toReturn += "互锁：+"+formater.format(il_bl)+"；"
+        }
+        if(tz_bl>0){
+            toReturn += "投资："+formater.format(tz_bl)+"；"
+        }
+        if(kg_bl>0){
+            toReturn += "控股："+formater.format(kg_bl)+"；"
+        }
+        if(jy_bl>0){
+            toReturn += "交易："+formater.format(jy_bl)+"；"
+        }
+        return toReturn
+    }
 }
 
 object EdgeAttr {
@@ -26,8 +44,7 @@ object EdgeAttr {
     }
 }
 class InfluenceEdgeAttr(val bel:Double,val pl:Double,val src:String,val dst:String) extends Serializable {
-
-    override def toString = s"InfluenceEdgeAttr($bel, $pl,$src,$dst)"
+    var edgeAttr:EdgeAttr= null;
 }
 
 object InfluenceEdgeAttr {

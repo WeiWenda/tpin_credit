@@ -41,6 +41,7 @@ object XYShowTools {
                 val newattr = VertexAttr(vattr.nsrsbh,vattr.name)
                 newattr.xydj = vattr.xydj
                 newattr.xyfz = vattr.xyfz
+                newattr.wtbz = vattr.wtbz
                 newattr
             })
         toReturn
@@ -152,6 +153,8 @@ object XYShowTools {
             }
 
         //annotation of david:此处无法使用反向获取路径，因为要求源点必须是人
+
+        //annotation of david:存在平行路径的问题
         val messagesOfControls = getPath(initialGraph, weight, maxIteratons = 3).mapValues(lists => lists.filter(_.size > 1).
             map{ case list=> val influ = list.map(_._2).min
                 (list.head._1,influ)
@@ -177,7 +180,11 @@ object XYShowTools {
                 edgeAttr.w_IL = weight
                 Edge(src, dst, edgeAttr)
             }
-        Graph(graph.vertices, graph.edges.union(newILEdges))
+        val newEdges = graph.edges.union(newILEdges).
+            map(e=>((e.srcId,e.dstId),e.attr)).
+            reduceByKey(WholeEdgeAttr.combine).
+            map(e=>Edge(e._1._1,e._1._2,e._2))
+        Graph(graph.vertices, newEdges)
     }
 
 }

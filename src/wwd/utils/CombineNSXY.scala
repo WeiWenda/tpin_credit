@@ -23,17 +23,17 @@ object CombineNSXY {
 //        }
 //        (xyfz - res).toInt
 //    }
-    def AggregateMessage(xyfz: Int, listMessage: scala.Seq[( Int, Double)]): Int = {
+    def AggregateMessage(xyfz: (Int,Boolean), listMessage: scala.Seq[( Int, Double)]): Int = {
         val totalWeight = listMessage.map(_._2).sum
         val Sortedlist = listMessage.sortBy(_._2)(Ordering[Double].reverse)
         var i = 0
         var res = 0D
         while(i< Sortedlist.size){
             val (cur_fx,weight) = Sortedlist(i)
-            res += (xyfz-cur_fx) *weight/totalWeight
+            res += (xyfz._1-cur_fx) *weight/totalWeight
             i+=1
         }
-        (xyfz - res).toInt
+        (xyfz._1 - res).toInt
     }
 
 
@@ -45,19 +45,19 @@ object CombineNSXY {
     }
 
     //annotation of david:先对已有评分的节点进行修正，（只拉低）
-    def run(influenceGraph: Graph[Int, Double]):  Graph[(Int,Int), Double] ={
+    def run(influenceGraph: Graph[(Int,Boolean), Double]):  Graph[(Int,Int,Boolean), Double] ={
         val fzMessage = influenceGraph.aggregateMessages[Seq[(Int,Double)]](ctx =>
-            if(ctx.srcAttr > 0 && ctx.dstAttr > 0){
-                val weight = ctx.attr * (100-ctx.srcAttr)/100D
-                ctx.sendToDst(Seq((ctx.srcAttr,weight)))
+            if(ctx.srcAttr._1 > 0 && ctx.dstAttr._1 > 0){
+                val weight = ctx.attr * (100-ctx.srcAttr._1)/100D
+                ctx.sendToDst(Seq((ctx.srcAttr._1,weight)))
             },_++_).cache()
 
         val fixAlreadyGraph = influenceGraph.outerJoinVertices(fzMessage){
             case(vid,vattr,listMessage) =>
                 if (listMessage.isEmpty)
-                    (vattr,vattr)
+                    (vattr._1,vattr._1,vattr._2)
                 else{
-                    (vattr, AggregateMessage(vattr,listMessage.get))
+                    (vattr._1, AggregateMessage(vattr,listMessage.get),vattr._2)
                 }
         }.cache()
         val fzMessage2 = fixAlreadyGraph.aggregateMessages[Seq[(Int,Double)]](ctx =>
@@ -71,7 +71,7 @@ object CombineNSXY {
                 if (listMessage.isEmpty)
                     vattr
                 else{
-                    (vattr._1,AggregateMessage(listMessage.get))
+                    (vattr._1,AggregateMessage(listMessage.get),vattr._3)
                 }
         }.cache()
         fzMessage.unpersist(blocking = false)

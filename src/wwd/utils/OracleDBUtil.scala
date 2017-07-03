@@ -97,7 +97,7 @@ object OracleDBUtil {
         JdbcUtils.saveTable(edgeDataFrame, url, dst, properties)
     }
 
-    def saveFinalScore(finalScore: Graph[(Int,Int), Double],sqlContext: SQLContext,
+    def saveFinalScore(finalScore: Graph[(Int,Int,Boolean), Double],sqlContext: SQLContext,
                        edge_dst:String="WWD_XYCD_EDGE_FINAL",vertex_dst:String="WWD_XYCD_VERTEX_FINAL",bypass:Boolean=false): Unit = {
         if(!bypass){
             DataBaseManager.execute("truncate table " + edge_dst)
@@ -127,7 +127,7 @@ object OracleDBUtil {
         JdbcUtils.saveTable(vertexDataFrame, url, vertex_dst, properties)
     }
 
-    def savePath(toOutput: RDD[Seq[(VertexId,String, Double, Double)]],sqlContext: SQLContext,edge_dst:String="WWD_XYCD_EDGE_ML",vertex_dst:String="WWD_XYCD_VERTEX_ML") = {
+    def savePath(toOutput: RDD[Seq[(VertexId,String, Double, Double,EdgeAttr)]],sqlContext: SQLContext,edge_dst:String="WWD_XYCD_EDGE_ML",vertex_dst:String="WWD_XYCD_VERTEX_ML") = {
         DataBaseManager.execute("truncate table " + edge_dst)
         val schema = StructType(
             List(
@@ -136,6 +136,7 @@ object OracleDBUtil {
                 StructField("target", LongType, true),
                 StructField("bel", DoubleType, true),
                 StructField("pl", DoubleType, true),
+                StructField("label",StringType,true),
                 StructField("COMPANY_NSRDZDAH", StringType, true),
                 StructField("SRC_NSRDZDAH", StringType, true),
                 StructField("DST_NSRDZDAH", StringType, true)
@@ -144,8 +145,8 @@ object OracleDBUtil {
         val rowRDD = toOutput.flatMap{p=>
             val company_id = p.last._1
             val company_nsrdzdah = p.last._2
-            val a =Seq[Seq[(VertexId, String, Double, Double)]]()++ p.sliding(2).filter(_.size == 2)
-            a.map(e=> Row(company_id,e(0)._1,e(1)._1,e(0)._3,e(0)._4,company_nsrdzdah,e(0)._2,e(1)._2))
+            val a =Seq[Seq[(VertexId, String, Double, Double,EdgeAttr)]]()++ p.sliding(2).filter(_.size == 2)
+            a.map(e=> Row(company_id,e(0)._1,e(1)._1,e(0)._3,e(0)._4,e(0)._5.toString,company_nsrdzdah,e(0)._2,e(1)._2))
         }.distinct()
         val edgeDataFrame = sqlContext.createDataFrame(rowRDD, schema).repartition(3)
         JdbcUtils.saveTable(edgeDataFrame, url, edge_dst, properties)

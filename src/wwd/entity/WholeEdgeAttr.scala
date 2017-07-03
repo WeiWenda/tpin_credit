@@ -64,6 +64,8 @@ object WholeEdgeAttr {
         toReturn.trade_je = a.trade_je + b.trade_je
         toReturn.tz_je = a.tz_je + b.tz_je
         toReturn.se = a.se + b.se
+        toReturn.w_IL = a.w_IL +b.w_IL;
+        toReturn.is_IL = a.is_IL || b.is_IL;
         toReturn
     }
 

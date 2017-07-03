@@ -8,6 +8,7 @@ class WholeVertexAttr(var name: String, var nsrsbh: String, var ishuman: Boolean
     var community_id: Long = 0
     var xydj:String = ""
     var xyfz:Int = 0
+    var wtbz:Boolean = false
 
     def toCsvString: String = {
         if (ishuman)
