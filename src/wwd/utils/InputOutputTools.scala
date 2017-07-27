@@ -34,7 +34,7 @@ object InputOutputTools {
         val XYJB_DF = sqlContext.read.format("jdbc").options(dbstring+(("dbtable","WWD_GROUNDTRUTH"))).load()
         val xyjb = XYJB_DF.select("VERTEXID", "XYGL_XYJB_DM", "FZ","WTBZ").rdd.
 //            filter(row =>  !(row.getAs[String]("XYGL_XYJB_DM") == "A" && row.getAs[String]("WTBZ")=="Y")).
-            filter(row =>  row.getAs[String]("XYGL_XYJB_DM") != "A" ).
+//            filter(row =>  row.getAs[String]("XYGL_XYJB_DM") != "A" ).
             map(row =>
 //            if (row.getAs[String]("XYGL_XYJB_DM") == "D")
 //                (row.getAs[BigDecimal]("VERTEXID").longValue(), (40, row.getAs[String]("XYGL_XYJB_DM")))
@@ -78,8 +78,10 @@ object InputOutputTools {
             leftOuterJoin(xyjb).
             map { case (vid, (vattr, opt_fz_dm)) =>
                 if (!opt_fz_dm.isEmpty) {
-                    vattr.xyfz = opt_fz_dm.get._1
-                    vattr.xydj = opt_fz_dm.get._2
+//                    if(!opt_fz_dm.get._2.equals("A")){
+                        vattr.xyfz = opt_fz_dm.get._1
+                        vattr.xydj = opt_fz_dm.get._2
+//                    }
                     if(opt_fz_dm.get._3.equals("Y")) vattr.wtbz = true;
                 }
                 (vid, vattr)

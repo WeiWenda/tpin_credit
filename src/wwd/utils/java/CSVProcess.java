@@ -30,6 +30,7 @@ public class CSVProcess {
     public static void saveAsCsvFile(FileWriter fw,String str) {
         try {
             fw.write(str + "\n");
+            fw.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }

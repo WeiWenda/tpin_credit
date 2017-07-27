@@ -119,10 +119,11 @@ object OracleDBUtil {
             List(
                 StructField("VERTICE", LongType, true),
                 StructField("INITSCORE", IntegerType, true),
-                StructField("FINALSCORE", IntegerType, true)
+                StructField("FINALSCORE", IntegerType, true),
+                StructField("WTBZ",StringType,true)
             )
         )
-        val rowRDD1 = finalScore.vertices.map(p => Row(p._1,p._2._1,p._2._2)).distinct()
+        val rowRDD1 = finalScore.vertices.map(p => Row(p._1,p._2._1,p._2._2,if(p._2._3)"Y" else "N")).distinct()
         val vertexDataFrame = sqlContext.createDataFrame(rowRDD1, schema1).repartition(3)
         JdbcUtils.saveTable(vertexDataFrame, url, vertex_dst, properties)
     }
