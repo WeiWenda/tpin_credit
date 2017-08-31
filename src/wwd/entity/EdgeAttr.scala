@@ -11,6 +11,7 @@ class EdgeAttr extends Serializable {
     var kg_bl: Double = 0.0
     var il_bl: Double = 0.0
 
+
     override def toString(): String = {
         var toReturn = ""
         val formater = new DecimalFormat("#.###")
@@ -27,6 +28,11 @@ class EdgeAttr extends Serializable {
             toReturn += "交易："+formater.format(jy_bl)+"；"
         }
         return toReturn
+    }
+
+    override def hashCode(): Int = {
+        val state = Seq()
+        state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
     }
 }
 

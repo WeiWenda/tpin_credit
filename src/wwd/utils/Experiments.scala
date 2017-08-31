@@ -135,6 +135,27 @@ object Experiments {
         val num2 = sorted1.count()
         sorted1.sum()/num2
     }
+    //annotation of david:对比有无互锁边的区别
+    def Experiment_3(sc: SparkContext, hiveContext: HiveContext) = {
+        val format = new SimpleDateFormat("hh:mm:ss.SSS")
+        val fw1 = CSVProcess.openCsvFileHandle(s"Result/experiment_3.csv", true)
+        CSVProcess.saveAsCsvFile(fw1, "alpha,AUC,RankScore,误检率,变化趋势")
+        val tpin = InputOutputTools.getFromObjectFile[VertexAttr,EdgeAttr](sc,"/tpin/wwd/influence/vertices","/tpin/wwd/influence/edges")
+        val influenceGraph = MessagePropagation.runFuzzWithoutIL(tpin,hiveContext,bypass=true,lambda = 3).mapVertices((vid,vattr)=>(vattr.xyfz,vattr.wtbz)).cache()
+        InputOutputTools.saveAsObjectFile(influenceGraph,sc,"/tpin/wwd/influence/inf_vertices_FuzzyTrust","/tpin/wwd/influence/inf_edges_FuzzyTrust")
+        val influenceGraph1 = InputOutputTools.getFromObjectFile[(Int,Boolean),Double](sc,"/tpin/wwd/influence/inf_vertices_FuzzyTrust","/tpin/wwd/influence/inf_edges_FuzzyTrust")
+        for (index <- Range(0, 21)) {
+            println(s"\r开始=> alpha:${index}  timestamp:${format.format(new Date())}")
+
+            val finalScore = CombineNSXY.run(influenceGraph1,index*0.05).cache()
+            CSVProcess.saveAsCsvFile(fw1, s"${index},${computeAUC(finalScore,total_num = 3000)},${computeRankScore(finalScore)},${computePref_new(finalScore)},${computeTendency(finalScore)}")
+            finalScore.unpersistVertices(blocking = false)
+            finalScore.edges.unpersist(blocking = false)
+        }
+        CSVProcess.closeCsvFileHandle(fw1)
+        println("Finished!")
+    }
+
     def Experiment_2(sc: SparkContext, hiveContext: HiveContext) = {
         val format = new SimpleDateFormat("hh:mm:ss.SSS")
         val fw1 = CSVProcess.openCsvFileHandle(s"Result/experiment_2.csv", true)
@@ -155,7 +176,7 @@ object Experiments {
         println("Finished!")
 
     }
-    def Experiment_1(sc: SparkContext, hiveContext: HiveContext) = {
+    def Experiment_1(sc: SparkContext, hiveContext: HiveContext,out :Int = 0 ,in:Int =0) = {
 
         val format = new SimpleDateFormat("hh:mm:ss.SSS")
         val fw1 = CSVProcess.openCsvFileHandle(s"Result/experiment_1.csv", true)
@@ -165,7 +186,7 @@ object Experiments {
         val tpin = InputOutputTools.getFromObjectFile[VertexAttr,EdgeAttr](sc,"/tpin/wwd/influence/vertices","/tpin/wwd/influence/edges")
         for (method1 <- Range(0, 6)) {
             for (method2 <- Range(0, 4)) {
-                if(method1 <5 || (method1==5&&method2<2)) {
+                if(method1 < out || (method1== out &&method2 < in)) {
 
                 }else{
                     var influenceGraph: Graph[(Int, Boolean), Double] = null

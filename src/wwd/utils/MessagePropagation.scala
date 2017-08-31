@@ -244,6 +244,32 @@ object MessagePropagation {
         finalInfluenceGraph
         //finalInfluenceGraph size: vertices:93523 edges:1850050
     }
+    //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
+    def runFuzzWithoutIL(tpin: Graph[VertexAttr, EdgeAttr], sqlContext: SQLContext, lambda: Int = 1,bypass: Boolean = false) = {
+        // tpin size: vertices:93523 edges:633300
+        val belAndPl = tpin.mapTriplets { case triplet =>
+            //            val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
+            //annotation of david:bel为概率下限，pl为概率上限
+            val bel = computeFuzzScore(0, triplet.attr.tz_bl, triplet.attr.kg_bl, triplet.attr.jy_bl)
+            val attr = InfluenceEdgeAttr(bel, bel, triplet.srcAttr.nsrdzdah, triplet.dstAttr.nsrdzdah)
+            attr.edgeAttr = triplet.attr
+            attr
+        }
+        val simplifiedGraph = selectNeighbor[String](belAndPl.mapVertices((vid, vattr) => vattr.nsrdzdah))
+        //annotation of david:企业对自身的bel和pl均为1
+        val initGraph = simplifiedGraph.mapVertices { case (vid, nsrdzdah) => Seq(Seq((vid, nsrdzdah, 1.0, 1.0,EdgeAttr()))) }
+        //initGraph size: vertices:93523 edges:132965
+        val paths = getPath(initGraph, maxIteratons = 3, initLength = 1).map(e => (e._1, e._2.filter(_.size > 1))).filter(e => e._2.size > 0)
+
+        //annotation of david:使用第一种三角范式
+        val influenceEdge = influenceOnPath(paths, lambda, sqlContext, bypass)
+        val influenceGraph = Graph(belAndPl.vertices, influenceEdge).persist()
+
+        //annotation of david:滤除影响力过小的边
+        val finalInfluenceGraph = influenceInTotal(influenceGraph)
+        finalInfluenceGraph
+        //finalInfluenceGraph size: vertices:93523 edges:1850050
+    }
 
     //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
     def runTidalTrust(tpin: Graph[VertexAttr, EdgeAttr], sqlContext: SQLContext,method:String="maxmin", lambda: Int = 1) = {

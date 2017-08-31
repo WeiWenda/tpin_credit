@@ -40,11 +40,18 @@ object CombineNSXY {
 
 //        if(( xyfz._1 - (1-alpha_fix)/alpha_fix * res).toInt <= 100) ( alpha * xyfz._1 - (1-alpha_fix)/alpha_fix * res).toInt  else 100
 
-        val totalWeight = listMessage.map(_._2).sum
+//        val totalWeight = listMessage.map(_._2).sum
+//        var before = 0D
+//        listMessage.foreach { case (cur_fx, weight) => before += cur_fx * weight / totalWeight }
+//        val result = alpha * xyfz._1/10 + (1-alpha) * before
+//        result.toInt
+
+        val totalWeight = listMessage.map(e=> e._2*(110-e._1)/100D).sum
         var before = 0D
-        listMessage.foreach { case (cur_fx, weight) => before += cur_fx * weight / totalWeight }
+        listMessage.foreach { case (cur_fx, weight) => before += cur_fx * weight*(110-cur_fx)/100D / totalWeight }
         val result = alpha * xyfz._1/10 + (1-alpha) * before
         result.toInt
+
     }
 
 
