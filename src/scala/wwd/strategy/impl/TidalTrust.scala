@@ -10,8 +10,9 @@ import wwd.utils.HdfsTools
 import scala.collection.Seq
 
 class TidalTrust extends credit_DS{
+  override var message2:String = "TidalTrust"
   //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
-  override def computeInfluence(tpin: Graph[InfluVertexAttr, InfluEdgeAttr], sqlContext: SparkSession,bypass: Boolean = false, method: String = "maxmin", lambda: Int = 1) = {
+  override def computeInfluence(tpin: Graph[InfluVertexAttr, InfluEdgeAttr]) = {
     // tpin size: vertices:93523 edges:633300
     val belAndPl = tpin.mapTriplets { case triplet =>
       //            val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
@@ -31,7 +32,7 @@ class TidalTrust extends credit_DS{
     //paths:93523
 
     //annotation of david:使用第一种三角范式
-    val influenceEdge = influenceOnPathTidalTrust(paths, lambda, sqlContext)
+    val influenceEdge = influenceOnPathTidalTrust(paths, lambda, session)
     val influenceGraph = Graph(belAndPl.vertices, influenceEdge).persist()
 
     //annotation of david:滤除影响力过小的边

@@ -4,20 +4,17 @@ package wwd.utils
 import _root_.java.util.Properties
 import _root_.java.text.DecimalFormat
 
-import wwd.utils.Parameters
 import org.apache.log4j.receivers.db.dialect.MySQLDialect
 import org.apache.spark.SparkContext
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.execution.datasources.jdbc.{JDBCOptions, JdbcUtils}
-import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.sql.jdbc.JdbcDialects
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Row, SQLContext, SparkSession, types}
 import wwd.entity.impl.{InfluEdgeAttr, WholeEdgeAttr, WholeVertexAttr}
 import wwd.entity.{EdgeAttr, VertexAttr}
 import wwd.strategy.impl.{ResultEdgeAttr, ResultVertexAttr}
-import wwd.utils.DataBaseManager
 
 import scala.collection.mutable
 

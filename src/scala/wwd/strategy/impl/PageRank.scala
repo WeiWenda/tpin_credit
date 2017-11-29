@@ -6,12 +6,10 @@ import wwd.utils.HdfsTools
 
 import scala.collection.Seq
 
-class PageRank extends credit_Fuzz{
-  val resetProb: Double = 0.15
-  val tol: Double = 1
-
+class PageRank( var resetProb: Double = 0.15, var tol: Double = 1) extends credit_Fuzz{
+  override var message3:String = "PageRank"
   //annotation of david: 点 原始评分 边 影响值 输出：点 原始评分 新评分 影响值
-  override def computeCreditScore(graph: Graph[(Int, Boolean), Double],alpha: Double = 0.5): Graph[ResultVertexAttr, ResultEdgeAttr] = {
+  override def computeCreditScore(graph: Graph[(Int, Boolean), Double]): Graph[ResultVertexAttr, ResultEdgeAttr] = {
 
     val degree = graph.aggregateMessages[Seq[Double]](ctx => {
       ctx.sendToSrc(Seq(ctx.attr))

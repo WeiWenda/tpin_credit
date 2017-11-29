@@ -5,7 +5,17 @@ import wwd.strategy.impl.{ResultEdgeAttr, ResultVertexAttr}
 
 import scala.reflect.ClassTag
 
-case class EvaluateResult[T: ClassTag](before: T, after: T)
+abstract class EvaluateResult[T:ClassTag]{
+  def toString(separator:String)
+}
+
+case class TwoResult[T: ClassTag](before: T, after: T)extends EvaluateResult[T]{
+  override def toString(separator:String) = before+separator+after
+}
+
+case class OneResult[T: ClassTag](one: T)extends EvaluateResult[T]{
+  override def toString(separator:String) = one.toString
+}
 
 abstract class Measurement[VD: ClassTag, ED: ClassTag, RD: ClassTag] {
   def compute(graph: Graph[VD, ED]): RD
@@ -49,8 +59,8 @@ case class NEIGHBOR() extends Measurement[ResultVertexAttr, ResultEdgeAttr, Eval
     pref / count.toDouble
   }
 
-  override protected def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): EvaluateResult[Double] = {
-    EvaluateResult(computeNEIGHBOR(graph, "old"), computeNEIGHBOR(graph, "new"))
+  override def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): EvaluateResult[Double] = {
+    TwoResult(computeNEIGHBOR(graph, "old"), computeNEIGHBOR(graph, "new"))
   }
 
 }
@@ -60,8 +70,8 @@ case class NEIGHBOR() extends Measurement[ResultVertexAttr, ResultEdgeAttr, Eval
   * Description: 计算AUC值，返回结果为两个Double，第一个为修改前，第二个为修改后
   * Date: 下午4:09 2017/11/28
   */
-case class AUC() extends Measurement[ResultVertexAttr, ResultEdgeAttr, EvaluateResult[Double]] {
-  def computeAUC(right: Array[Int], wrong: Array[Int], total_num: Int): Double = {
+case class AUC(val total_num:Int = 1000) extends Measurement[ResultVertexAttr, ResultEdgeAttr, EvaluateResult[Double]] {
+  def computeAUC(right: Array[Int], wrong: Array[Int]): Double = {
     var score: Double = 0D
     for (i <- Range(0, total_num)) {
       if (right(i) > wrong(i)) score += 1
@@ -70,13 +80,12 @@ case class AUC() extends Measurement[ResultVertexAttr, ResultEdgeAttr, EvaluateR
     score / total_num
   }
 
-  override protected def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): EvaluateResult[Double] = {
-    val total_num: Int = 1000
+  override def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): EvaluateResult[Double] = {
     val right_new = graph.vertices.filter(e => !e._2.wtbz && e._2.old_fz > 0).map(e => (e._2.new_fz)).takeSample(true, total_num)
     val wrong_new = graph.vertices.filter(e => e._2.wtbz && e._2.old_fz > 0).map(e => (e._2.new_fz)).takeSample(true, total_num)
     val right_old = graph.vertices.filter(e => !e._2.wtbz && e._2.old_fz > 0).map(e => (e._2.old_fz)).takeSample(true, total_num)
     val wrong_old = graph.vertices.filter(e => e._2.wtbz && e._2.old_fz > 0).map(e => (e._2.old_fz)).takeSample(true, total_num)
-    EvaluateResult(computeAUC(right_old, wrong_old, total_num), computeAUC(right_new, wrong_new, total_num))
+    TwoResult(computeAUC(right_old, wrong_old), computeAUC(right_new, wrong_new))
   }
 }
 /**
@@ -105,10 +114,10 @@ case class PREF() extends Measurement[ResultVertexAttr, ResultEdgeAttr, Evaluate
             ctx.sendToDst(Seq((ctx.srcAttr.new_fz, ctx.srcAttr.wtbz)))
         }, _ ++ _)
     }
-    val pref = graph.vertices.join(msg).map { case (vid, ((oldfz, newfz, wtbz), msg)) =>
-      val count = msg.filter(_._1 < newfz).size
+    val pref = graph.vertices.join(msg).map { case (vid, (vattr, msg)) =>
+      val count = msg.filter(_._1 < vattr.new_fz).size
       val mz = msg.filter { case (fz, wtbzo) =>
-        wtbzo == false && fz < newfz //&& fz!=0
+        wtbzo == false && fz < vattr.new_fz //&& fz!=0
       }.size
       if (count == 0)
         0
@@ -118,8 +127,8 @@ case class PREF() extends Measurement[ResultVertexAttr, ResultEdgeAttr, Evaluate
     val prefinal = pref.reduce(_ + _) / pref.count()
     prefinal
   }
-  override protected def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): EvaluateResult[Double] = {
-    EvaluateResult(computePREF(graph, "old"), computePREF(graph, "new"))
+  override def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): EvaluateResult[Double] = {
+    TwoResult(computePREF(graph, "old"), computePREF(graph, "new"))
   }
 }
 
@@ -128,21 +137,21 @@ case class PREF() extends Measurement[ResultVertexAttr, ResultEdgeAttr, Evaluate
   * Description: 异常企业的分数变化趋势
   * Date: 下午4:09 2017/11/28
   */
-case class TENDENCY() extends Measurement[ResultVertexAttr, ResultEdgeAttr, Double] {
-  override protected def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]) = {
+case class TENDENCY() extends Measurement[ResultVertexAttr, ResultEdgeAttr, EvaluateResult[Double]] {
+  override def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]) = {
     val co1 = graph.vertices.filter { case (vid, vattr) => vattr.wtbz && vattr.new_fz <= vattr.old_fz }.count()
     val co2 = graph.vertices.filter(_._2.wtbz).count()
-    co1 / co2.toDouble
+    OneResult(co1 / co2.toDouble)
   }
 }
 
-case class RANKSCORE() extends Measurement[ResultVertexAttr, ResultEdgeAttr, Double] {
-  override protected def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]) = {
+case class RANKSCORE() extends Measurement[ResultVertexAttr, ResultEdgeAttr, EvaluateResult[Double]] {
+  override def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]) = {
     val sorted = graph.vertices.filter(_._2.old_fz > 0).sortBy(_._2.new_fz).zipWithIndex()
     val num1 = sorted.count()
     val sorted1 = sorted.filter(e => e._1._2.wtbz).map(e => e._2 / num1.toDouble)
     val num2 = sorted1.count()
-    sorted1.sum() / num2
+    OneResult(sorted1.sum() / num2)
   }
 }
 

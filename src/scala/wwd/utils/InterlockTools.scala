@@ -1,13 +1,12 @@
-package wwd.utils.xyshow
+package wwd.utils
 
 import org.apache.spark.graphx._
 import wwd.entity.impl._
-import wwd.entity.{VertexAttr}
 
 /**
   * Created by weiwenda on 2017/5/11.
   */
-object XYShowTools {
+object InterlockTools {
 
     //annotation of david:将传统的tpin转换为影响力初始网络
     def transform(tpinWithIL: Graph[WholeVertexAttr, WholeEdgeAttr]) = {

@@ -8,8 +8,7 @@ import wwd.entity.impl.{InfluEdgeAttr, InfluVertexAttr, WholeEdgeAttr, WholeVert
 import wwd.entity.{EdgeAttr, VertexAttr}
 import wwd.evaluation.PREF
 import wwd.strategy.ALRunner
-import wwd.utils.{HdfsTools, OracleDBUtil}
-import wwd.utils.xyshow.XYShowTools
+import wwd.utils.{HdfsTools, OracleDBUtil, InterlockTools}
 
 import scala.collection.Seq
 import scala.reflect.ClassTag
@@ -19,25 +18,47 @@ case class ResultVertexAttr(old_fz: Int, new_fz: Int, wtbz: Boolean) extends Ver
 case class ResultEdgeAttr(influ: Double) extends EdgeAttr
 
 case class DSEdgeAttr(val bel: Double, val pl: Double, val src: String, val dst: String, val edgeAttr: InfluEdgeAttr) extends EdgeAttr
-
-class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAttr, ResultEdgeAttr] {
+/**
+* Author: weiwenda
+* Description: credit_DS继承自抽象类ALRunner，且位于继承链的最高层
+*              1.实现getGraph，内置强制计算和读缓存功能
+*              2.实现adjust,类似于模板方法，依次调用computeInfluence、persist和computeCreditScore三大函数
+*              3.实现persist,将计算结果输出到Oracle（区别于ALRunner的重载方法persist将中间结果存储至HDFS）
+*              4.实现descrioption
+*
+* Date: 下午8:08 2017/11/29
+*/
+class credit_DS(var alpha: Double = 0.5,
+                var bypass: Boolean = true,
+                var method: Int = 1,
+                var lambda: Int = 1,
+                val forceReConstruct:Boolean=false
+               ) extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAttr, ResultEdgeAttr] {
+  var message1:String = s"DS powered by ${credit_DS.method1s.get(1).get}"
+  var message2:String = credit_DS.method2s.get(lambda).get
+  var message3:String = "加权偏移"
+  override def description:String={
+    s"${this.getClass.getSimpleName}:影响力计算方法:${message1} 传递影响计算方法:${message2} 融合方法:${message3}"
+  }
   /**
     * Author: weiwenda
     * Description: 从Oracle读入，添加互锁边，并保存至HDFS
     * Date: 下午4:22 2017/11/28
     */
   override def getGraph(sc: SparkContext, session: SparkSession) = {
-    //        if(!InputOutputTools.Exist(sc,"/tpin/wwd/influence/vertices")){
-    val tpin = HdfsTools.getFromOracleTable2(session).persist()
-    println("\nafter construct:  \n" + tpin.vertices.count)
-    println(tpin.edges.count)
-    HdfsTools.saveAsObjectFile(tpin, sc, "/tpin/wwd/influence/whole_vertices", "/tpin/wwd/influence/whole_edges")
-    //        }
-    val tpinFromObject = HdfsTools.getFromObjectFile[WholeVertexAttr, WholeEdgeAttr](sc, "/tpin/wwd/influence/whole_vertices", "/tpin/wwd/influence/whole_edges")
-    //annotation of david:这里的互锁边为董事会互锁边
-    val tpinWithIL = XYShowTools.addIL(tpinFromObject, weight = 0.0, degree = 1).persist()
-    val tpinOnlyCompany = XYShowTools.transform(tpinWithIL)
-    HdfsTools.saveAsObjectFile(tpinOnlyCompany, sc, "/tpin/wwd/influence/vertices_init", "/tpin/wwd/influence/edges_init")
+    //annotation of david:forceReConstruct=true表示强制重新构建原始TPIN,默认不强制
+    if (!HdfsTools.Exist(sc, "/tpin/wwd/influence/vertices") || forceReConstruct) {
+      val tpin = HdfsTools.getFromOracleTable2(session).persist()
+      println("\nafter construct:  \n" + tpin.vertices.count)
+      println(tpin.edges.count)
+      HdfsTools.saveAsObjectFile(tpin, sc, "/tpin/wwd/influence/whole_vertices", "/tpin/wwd/influence/whole_edges")
+
+      val tpinFromObject = HdfsTools.getFromObjectFile[WholeVertexAttr, WholeEdgeAttr](sc, "/tpin/wwd/influence/whole_vertices", "/tpin/wwd/influence/whole_edges")
+      //annotation of david:这里的互锁边为董事会互锁边
+      val tpinWithIL = InterlockTools.addIL(tpinFromObject, weight = 0.0, degree = 1).persist()
+      val tpinOnlyCompany = InterlockTools.transform(tpinWithIL)
+      HdfsTools.saveAsObjectFile(tpinOnlyCompany, sc, "/tpin/wwd/influence/vertices_init", "/tpin/wwd/influence/edges_init")
+    }
     HdfsTools.getFromObjectFile[InfluVertexAttr, InfluEdgeAttr](sc, "/tpin/wwd/influence/vertices", "/tpin/wwd/influence/edges")
   }
 
@@ -48,10 +69,9 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
     * Date: 下午6:52 2017/11/28
     */
   override def adjust(graph: Graph[InfluVertexAttr, InfluEdgeAttr]): Graph[ResultVertexAttr, ResultEdgeAttr] = {
-    val influenceGraph = computeInfluence(graph, session, bypass = true).mapVertices((vid, vattr) => (vattr.xyfz, vattr.wtbz))
-
-    HdfsTools.saveAsObjectFile(influenceGraph, sc, "/tpin/wwd/influence/inf_vertices", "/tpin/wwd/influence/inf_edges")
-    val influenceGraph1 = HdfsTools.getFromObjectFile[(Int, Boolean), Double](sc, "/tpin/wwd/influence/inf_vertices", "/tpin/wwd/influence/inf_edges")
+    val influenceGraph = computeInfluence(graph).mapVertices((vid, vattr) => (vattr.xyfz, vattr.wtbz))
+    val savePath = Seq("/tpin/wwd/influence/inf_vertices", "/tpin/wwd/influence/inf_edges")
+    val influenceGraph1 = persist(influenceGraph,savePath)
     //annotation of david:修正后听影响力网络 vertices:93523 edges:1850050
     // fixedGraph: Graph[Int, Double] 点属性为修正后的信用评分，边属性仍为影响力值
     computeCreditScore(influenceGraph1)
@@ -64,7 +84,7 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
 
 
   //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
-  def computeInfluence(tpin: Graph[InfluVertexAttr, InfluEdgeAttr], sqlContext: SparkSession, bypass: Boolean = false, method: String = "maxmin", lambda: Int = 1) = {
+  def computeInfluence(tpin: Graph[InfluVertexAttr, InfluEdgeAttr]) = {
     // tpin size: vertices:93523 edges:633300
     val belAndPl = tpin.mapTriplets { case triplet =>
       //            val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
@@ -84,7 +104,7 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
     //        sc.objectFile[(VertexId,MessagePropagation.Paths)](verticesFilePath)
     //paths:93523
     //annotation of david:lambda=1表示使用第一种三角范式，bypass=true表示不输出路径用于显示
-    val influenceEdge = _influenceOnPath(paths, lambda, sqlContext, bypass)
+    val influenceEdge = _influenceOnPath(paths, lambda, session, bypass)
     val influenceGraph = Graph(belAndPl.vertices, influenceEdge).persist()
 
     //annotation of david:滤除影响力过小的边
@@ -92,8 +112,9 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
     finalInfluenceGraph
     //finalInfluenceGraph size: vertices:93523 edges:1850050
   }
+
   //annotation of david:先对已有评分的节点进行修正，（只拉低）
-  def computeCreditScore(influenceGraph: Graph[(Int, Boolean), Double], alpha: Double = 0.5): Graph[ResultVertexAttr, ResultEdgeAttr] = {
+  def computeCreditScore(influenceGraph: Graph[(Int, Boolean), Double]): Graph[ResultVertexAttr, ResultEdgeAttr] = {
     val fzMessage = influenceGraph.aggregateMessages[Seq[(Int, Double)]](ctx =>
       if (ctx.srcAttr._1 > 0 && ctx.dstAttr._1 > 0) {
         //&& ctx.srcAttr._1 < 90 && ctx.dstAttr._1 < 90
@@ -135,10 +156,11 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
     fixNotyetGraph.mapVertices { case (vid, (old, newfz, wtbz)) => ResultVertexAttr(old, (newfz / max.toDouble * 100).toInt, wtbz) }
       .mapEdges(e => ResultEdgeAttr(e.attr))
   }
+
   //annotation of david:概率上限
-  protected def _computePl(controllerInterSect: Double, tz_bl: Double, kg_bl: Double, jy_bl: Double, method: String = "maxmin") = {
+  protected def _computePl(controllerInterSect: Double, tz_bl: Double, kg_bl: Double, jy_bl: Double, method: Int) = {
     var max = 0D
-    method match {
+    credit_DS.method1s.get(method).get match {
       case "maxmin" => max = Seq(controllerInterSect, tz_bl, kg_bl, jy_bl).max;
       case "proba" => max = controllerInterSect + tz_bl + kg_bl + jy_bl -
         controllerInterSect * tz_bl - tz_bl * kg_bl - kg_bl * jy_bl - controllerInterSect * kg_bl - controllerInterSect * jy_bl - tz_bl * jy_bl +
@@ -153,10 +175,10 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
   }
 
   //annotation of david:概率下限 对空集进行min会报empty.min错
-  protected def _computeBel(controllerInterSect: Double, tz_bl: Double, kg_bl: Double, jy_bl: Double, method: String = "maxmin") = {
+  protected def _computeBel(controllerInterSect: Double, tz_bl: Double, kg_bl: Double, jy_bl: Double, method: Int) = {
     val tmp = Seq(controllerInterSect, tz_bl, kg_bl, jy_bl).filter(_ > 0)
     var min = 0D
-    method match {
+    credit_DS.method1s.get(method).get match {
       case "maxmin" =>
         if (tmp.size > 0)
           min = tmp.min
@@ -168,6 +190,7 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
       min = 1
     min
   }
+
   //annotation of david:使用三角范式计算路径上的影响值（包含参照影响逻辑和基础影响逻辑）
   protected def _influenceOnPath[T <: Iterable[Seq[(graphx.VertexId, String, Double, Double, InfluEdgeAttr)]]](paths: RDD[(VertexId, T)], lambda: Int, sqlContext: SparkSession, bypass: Boolean) = {
     if (!bypass) {
@@ -185,7 +208,7 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
     val influences = paths.map { case (vid, vattr) =>
       val DAG = credit_DS.graphReduce(vattr)
       val influenceSinglePath = DAG.map { path =>
-        val res = path.reduceLeft((a, b) =>credit_DS.combineInfluence(a, b, lambda))
+        val res = path.reduceLeft((a, b) => credit_DS.combineInfluence(a, b, lambda))
         //annotation of david:pTrust使用t-norm，unc使用pl-bel求平均
         (res._1, res._3, res._4 / (path.size - 1))
       }
@@ -197,6 +220,7 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
       map { case ((vid, dstid), (pTrust, total_certainty)) => Edge(vid, dstid, pTrust / total_certainty) }
     influences
   }
+
   //annotation of david:利用pTrust和unc聚合多路径的影响值，权重比例为 1-unc
   protected def _combinePath1(x: (Double, Double), y: (Double, Double)) = {
     (x._1 + (y._1 * (1 - y._2)), x._2 + 1 - y._2)
@@ -206,6 +230,7 @@ class credit_DS extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAtt
   protected def _combinePath2(x: (Double, Double), y: (Double, Double)) = {
     (x._1 + y._1, x._2 + y._2)
   }
+
   protected def _AggregateMessage(listMessage: Seq[(Int, Double)]): Int = {
     val totalWeight = listMessage.map(_._2).sum
     var res = 0D
@@ -267,6 +292,8 @@ object credit_DS {
     val outputPaths = Seq("/tpin/wwd/influence/fixed_vertices", "/tpin/wwd/influence/fixed_edges")
     instance.persist[ResultVertexAttr, ResultEdgeAttr](instance.fixedGraph, outputPaths)
   }
+  val method1s = Map(1->"maxmin",2->"proba",3->"bouned",4->"ds",5->"TidalTrust",6->"fuzz")
+  val method2s = Map(1 ->"min",2 ->"product",3 -> "(a * b) / (a + b - a * b)",4->"a + b - 1")
   type Path = Seq[(VertexId, String, Double, Double, InfluEdgeAttr)]
   type Paths = Seq[Seq[(VertexId, String, Double, Double, InfluEdgeAttr)]]
 
@@ -369,8 +396,9 @@ object credit_DS {
   def graphReduce[T <: Iterable[Seq[(graphx.VertexId, String, Double, Double, EdgeAttr)]]](vattr: T): T = {
     vattr
   }
+
   //annotation of david:使用frank t-norm聚合路径上的影响值，vid,bel,pl
-  def combineInfluence(x: (graphx.VertexId, String, Double, Double, EdgeAttr), y: (graphx.VertexId, String, Double, Double, EdgeAttr), lambda: Int) = {
+  def combineInfluence(x: (graphx.VertexId, String, Double, Double, InfluEdgeAttr), y: (graphx.VertexId, String, Double, Double, InfluEdgeAttr), lambda: Int) = {
     val plambda = 0.001
     val a = x._4
     val b = y._4
@@ -384,6 +412,7 @@ object credit_DS {
     else pTrust = Math.log(1 + (((Math.pow(plambda, a) - 1) * ((Math.pow(plambda, b) - 1))) / (plambda - 1))) / Math.log(plambda)
     (y._1, "", pTrust, unc, y._5)
   }
+
   //annotation of david:增加考虑源点企业和终点企业的控制人亲密度，以及多条路径，得到标量的影响值，加权平均
   def influenceInTotal(influenceGraph: Graph[InfluVertexAttr, Double]) = {
     val toReturn = influenceGraph.mapTriplets { case triplet =>

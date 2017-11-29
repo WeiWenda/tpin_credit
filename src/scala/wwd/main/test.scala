@@ -4,7 +4,6 @@ import java.util.Date
 
 import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.{SparkContext, SparkConf}
-import wwd.entity.InfluenceEdgeAttr
 import wwd.utils.HdfsTools
 
 import scala.Seq

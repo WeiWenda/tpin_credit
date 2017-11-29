@@ -3,16 +3,23 @@ package wwd.strategy.impl
 import org.apache.spark.graphx.Graph
 import org.apache.spark.sql.SparkSession
 import wwd.entity.impl.{InfluEdgeAttr, InfluVertexAttr}
+import wwd.evaluation.{EvaluateResult, Measurement}
 
 import scala.collection.Seq
-
-class credit_Fuzz extends credit_DS {
-  override def computeInfluence(tpin: Graph[InfluVertexAttr, InfluEdgeAttr], sqlContext: SparkSession, bypass: Boolean, method: String, lambda: Int) = {
+/**
+* Author: weiwenda
+* Description: 继承自credit_DS，重写了computeInfluence，采用模糊推理方法计算影响值
+* Date: 下午9:00 2017/11/29
+*/
+class credit_Fuzz(ignoreIL:Boolean=false) extends credit_DS {
+  override var message1:String = s"模糊推理"
+  override def computeInfluence(tpin: Graph[InfluVertexAttr, InfluEdgeAttr]) = {
     // tpin size: vertices:93523 edges:633300
     val belAndPl = tpin.mapTriplets { case triplet =>
       //            val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
       //annotation of david:bel为概率下限，pl为概率上限
-      val bel = computeFuzzScore(triplet.attr.il_bl, triplet.attr.tz_bl, triplet.attr.kg_bl, triplet.attr.jy_bl)
+      //                      当ignoreIL为true时，无视il_bl
+      val bel = computeFuzzScore(if(ignoreIL) 0 else triplet.attr.il_bl, triplet.attr.tz_bl, triplet.attr.kg_bl, triplet.attr.jy_bl)
       val attr = DSEdgeAttr(bel, bel, triplet.srcAttr.nsrdzdah, triplet.dstAttr.nsrdzdah, triplet.attr)
       attr
     }
@@ -23,7 +30,7 @@ class credit_Fuzz extends credit_DS {
     val paths = credit_DS.getPath(initGraph, maxIteratons = 3, initLength = 1).map(e => (e._1, e._2.filter(_.size > 1))).filter(e => e._2.size > 0)
 
     //annotation of david:使用第一种三角范式
-    val influenceEdge = _influenceOnPath(paths, lambda, sqlContext, bypass)
+    val influenceEdge = _influenceOnPath(paths, lambda, session, bypass)
     val influenceGraph = Graph(belAndPl.vertices, influenceEdge).persist()
 
     //annotation of david:滤除影响力过小的边
@@ -73,32 +80,6 @@ class credit_Fuzz extends credit_DS {
           toReturn = if (norm < 10 * bl) norm else 10 * bl
     }
     toReturn
-  }
-
-  //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
-  def runFuzzWithoutIL(tpin: Graph[InfluVertexAttr, InfluEdgeAttr], sqlContext: SparkSession, lambda: Int = 1, bypass: Boolean = false) = {
-    // tpin size: vertices:93523 edges:633300
-    val belAndPl = tpin.mapTriplets { case triplet =>
-      //            val controllerInterSect = computeCI(triplet.srcAttr, triplet.dstAttr)
-      //annotation of david:bel为概率下限，pl为概率上限
-      val bel = computeFuzzScore(0, triplet.attr.tz_bl, triplet.attr.kg_bl, triplet.attr.jy_bl)
-      val attr = DSEdgeAttr(bel, bel, triplet.srcAttr.nsrdzdah, triplet.dstAttr.nsrdzdah, triplet.attr)
-      attr
-    }
-    val simplifiedGraph = credit_DS.selectNeighbor[String](belAndPl.mapVertices((vid, vattr) => vattr.nsrdzdah))
-    //annotation of david:企业对自身的bel和pl均为1
-    val initGraph = simplifiedGraph.mapVertices { case (vid, nsrdzdah) => Seq(Seq((vid, nsrdzdah, 1.0, 1.0, InfluEdgeAttr()))) }
-    //initGraph size: vertices:93523 edges:132965
-    val paths = credit_DS.getPath(initGraph, maxIteratons = 3, initLength = 1).map(e => (e._1, e._2.filter(_.size > 1))).filter(e => e._2.size > 0)
-
-    //annotation of david:使用第一种三角范式
-    val influenceEdge = _influenceOnPath(paths, lambda, sqlContext, bypass)
-    val influenceGraph = Graph(belAndPl.vertices, influenceEdge).persist()
-
-    //annotation of david:滤除影响力过小的边
-    val finalInfluenceGraph = credit_DS.influenceInTotal(influenceGraph)
-    finalInfluenceGraph
-    //finalInfluenceGraph size: vertices:93523 edges:1850050
   }
 
 }

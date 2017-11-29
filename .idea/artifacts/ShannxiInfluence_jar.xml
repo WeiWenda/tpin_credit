@@ -3,6 +3,9 @@
     <output-path>$PROJECT_DIR$/out/artifacts/ShannxiInfluence_jar</output-path>
     <root id="archive" name="ShannxiInfluence.jar">
       <element id="module-output" name="ShannxiInfluence" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/out/META-INF/MANIFEST.MF" />
+      </element>
     </root>
   </artifact>
 </component>
