@@ -21,11 +21,14 @@ import scala.reflect.ClassTag
 *               7.普通方法evaluation，针对当前计算结果，统计一个或多个评价指标
 * Date: 下午8:11 2017/11/29
 */
-abstract class ALRunner[VD1: ClassTag, ED1: ClassTag, VD2: ClassTag, ED2: ClassTag] {
+abstract class ALRunner[VD1: ClassTag, ED1: ClassTag, VD2: ClassTag, ED2: ClassTag]() extends Serializable{
+  @transient
   var sc: SparkContext = _
+  @transient
   var session: SparkSession = _
-
+  @transient
   var primitiveGraph: Graph[VD1, ED1] = _
+  @transient
   var fixedGraph: Graph[VD2, ED2] = _
 
   initialize()
@@ -63,11 +66,13 @@ abstract class ALRunner[VD1: ClassTag, ED1: ClassTag, VD2: ClassTag, ED2: ClassT
     measurement.compute(fixedGraph)
   }
 
-  def persist[VD, ED](graph: Graph[VD, ED], outputPaths: Seq[String]): Graph[VD, ED] = {
+  def persist[VD:ClassTag, ED:ClassTag](graph: Graph[VD, ED], outputPaths: Seq[String]): Graph[VD, ED] = {
     HdfsTools.saveAsObjectFile(graph, sc, outputPaths(0), outputPaths(1))
     HdfsTools.getFromObjectFile[VD, ED](sc, outputPaths(0), outputPaths(1))
   }
 
   def persist(graph: Graph[VD2, ED2]): Unit
+
+  def showDimension[VD,ED](graph:Graph[VD,ED],title:String)
 
 }

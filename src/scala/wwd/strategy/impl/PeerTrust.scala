@@ -5,7 +5,7 @@ import org.apache.spark.graphx.{Graph, PartitionID}
 import scala.collection.Seq
 
 class PeerTrust extends credit_Fuzz{
-  override var message3:String = "PreeTrust"
+  override val message3:String = "PreeTrust"
   //annotation of david:考虑出度、入度、影响值、原始评分
   override def computeCreditScore(influenceGraph: Graph[(Int, Boolean), Double]): Graph[ResultVertexAttr, ResultEdgeAttr] = {
     val outdegree = influenceGraph.outDegrees

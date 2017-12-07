@@ -302,9 +302,9 @@ object HdfsTools {
     checkDirExist(sparkContext, verticesFilePath)
     checkDirExist(sparkContext, edgesFilePath)
     // 对象方式保存顶点集
-    tpin.vertices.repartition(1).saveAsObjectFile(verticesFilePath)
+    tpin.vertices.repartition(30).saveAsObjectFile(verticesFilePath)
     // 对象方式保存边集
-    tpin.edges.repartition(1).saveAsObjectFile(edgesFilePath)
+    tpin.edges.repartition(30).saveAsObjectFile(edgesFilePath)
   }
 
   // 保存TPIN到HDFS
@@ -320,7 +320,7 @@ object HdfsTools {
   }
 
   def checkDirExist(sc: SparkContext, outpath: String) = {
-    val hdfs = FileSystem.get(new URI("hdfs://cloud-03:9000"), sc.hadoopConfiguration)
+    val hdfs = FileSystem.get(new URI(Parameters.Home), sc.hadoopConfiguration)
     try {
       hdfs.delete(new Path(outpath), true)
     }
@@ -330,14 +330,14 @@ object HdfsTools {
   }
 
   // 从HDFS获取TPIN
-  def getFromObjectFile[VD: ClassTag, ED: ClassTag](sparkContext: SparkContext, verticesFilePath: String = "/tpin/object/vertices_wwd", edgesFilePath: String = "/tpin/object/edges_wwd")
+  def getFromObjectFile[VD:ClassTag, ED:ClassTag](sparkContext: SparkContext, verticesFilePath: String = "/tpin/object/vertices_wwd", edgesFilePath: String = "/tpin/object/edges_wwd")
   : Graph[VD, ED] = {
     // 对象方式获取顶点集
-    val vertices = sparkContext.objectFile[(VertexId, VD)](verticesFilePath).repartition(200)
+    val vertices = sparkContext.objectFile[(VertexId, VD)](verticesFilePath).repartition(30)
     // 对象方式获取边集
-    val edges = sparkContext.objectFile[Edge[ED]](edgesFilePath).repartition(200)
+    val edges = sparkContext.objectFile[Edge[ED]](edgesFilePath).repartition(30)
     // 构建图
-    Graph[VD, ED](vertices, edges)
+    Graph[VD,ED](vertices, edges)
   }
 
   def getFromCsv(sc: SparkContext, vertexPath: String, edgePath: String): Graph[InfluVertexAttr, InfluEdgeAttr] = {
@@ -381,7 +381,7 @@ object HdfsTools {
   }
 
   def Exist(sc: SparkContext, outpath: String) = {
-    val hdfs = FileSystem.get(new URI("hdfs://cloud-03:9000"), sc.hadoopConfiguration)
+    val hdfs = FileSystem.get(new URI(Parameters.Home), sc.hadoopConfiguration)
     hdfs.exists(new Path(outpath))
   }
 }

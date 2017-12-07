@@ -19,7 +19,11 @@ import scala.util.Random
   * Created by weiwenda on 2017/3/20.
   */
 object Experiments {
-  PropertyConfigurator.configure(this.getClass.getClassLoader().getResource("log4j.properties"))
+//  import wwd.main.Experiments
+  def main(args: Array[String]): Unit = {
+    println("---------------------------=====================")
+  }
+  PropertyConfigurator.configure(this.getClass.getClassLoader().getResource("mylog4j.properties"))
   val log = LoggerFactory.getLogger(this.getClass.getName.stripSuffix("$"))
   val fileLogger = LoggerFactory.getLogger("csvFile")
   val measurements = Seq(AUC(3000),RANKSCORE(),PREF(),TENDENCY())

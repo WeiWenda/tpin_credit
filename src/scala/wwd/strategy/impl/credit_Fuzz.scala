@@ -12,7 +12,7 @@ import scala.collection.Seq
 * Date: 下午9:00 2017/11/29
 */
 class credit_Fuzz(ignoreIL:Boolean=false) extends credit_DS {
-  override var message1:String = s"模糊推理"
+  override val message1:String = s"模糊推理"
   override def computeInfluence(tpin: Graph[InfluVertexAttr, InfluEdgeAttr]) = {
     // tpin size: vertices:93523 edges:633300
     val belAndPl = tpin.mapTriplets { case triplet =>

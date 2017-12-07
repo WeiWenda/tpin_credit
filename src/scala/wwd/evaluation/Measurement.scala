@@ -6,15 +6,19 @@ import wwd.strategy.impl.{ResultEdgeAttr, ResultVertexAttr}
 import scala.reflect.ClassTag
 
 abstract class EvaluateResult[T:ClassTag]{
-  def toString(separator:String)
+  def toString(separator:String):String
 }
 
 case class TwoResult[T: ClassTag](before: T, after: T)extends EvaluateResult[T]{
-  override def toString(separator:String) = before+separator+after
+  override def toString(separator:String):String={
+    before+separator+after
+  }
 }
 
 case class OneResult[T: ClassTag](one: T)extends EvaluateResult[T]{
-  override def toString(separator:String) = one.toString
+  override def toString(separator:String):String={
+    one.toString
+  }
 }
 
 abstract class Measurement[VD: ClassTag, ED: ClassTag, RD: ClassTag] {

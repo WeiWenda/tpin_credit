@@ -10,7 +10,7 @@ import wwd.utils.HdfsTools
 import scala.collection.Seq
 
 class TidalTrust extends credit_DS{
-  override var message2:String = "TidalTrust"
+  override val message2:String = "TidalTrust"
   //annotation of david:1.初始化bel和pl 2.选择邻居 3.图结构简化
   override def computeInfluence(tpin: Graph[InfluVertexAttr, InfluEdgeAttr]) = {
     // tpin size: vertices:93523 edges:633300

@@ -7,25 +7,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee7f05f6-02b3-41ff-9681-b9354a56a564" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/scala/wwd/main/Main.scala" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/resources/log4j-defaults.properties" afterPath="$PROJECT_DIR$/src/resources/log4j.properties" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/scala/wwd/utils/xyshow/XYShowTools.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/utils/InterlockTools.scala" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/resources/log4j.properties" afterPath="$PROJECT_DIR$/src/resources/mylog4j.properties" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/ShannxiInfluence_jar/ShannxiInfluence.jar" afterPath="$PROJECT_DIR$/out/artifacts/ShannxiInfluence_jar/ShannxiInfluence.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/ShannxiInfluence_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/ShannxiInfluence_jar.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ShannxiInfluence.iml" afterPath="$PROJECT_DIR$/ShannxiInfluence.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/wwd/utils/Parameters.java" afterPath="$PROJECT_DIR$/src/java/wwd/utils/Parameters.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/resources/oracle.properties" afterPath="$PROJECT_DIR$/src/resources/oracle.properties" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/evaluation/Measurement.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/evaluation/Measurement.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/main/Experiments.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/main/Experiments.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/main/XYShow.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/main/XYShow.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/main/test.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/main/test.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/strategy/ALRunner.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/strategy/ALRunner.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/PageRank.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/PageRank.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/PeerTrust.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/PeerTrust.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/TidalTrust.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/TidalTrust.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_DS.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_DS.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_Fuzz.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_Fuzz.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/utils/OracleDBUtil.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/utils/OracleDBUtil.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scala/wwd/utils/HdfsTools.scala" afterPath="$PROJECT_DIR$/src/scala/wwd/utils/HdfsTools.scala" />
     </list>
     <ignored path="ShannxiInfluence.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -46,14 +44,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="HdfsTools.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/HdfsTools.scala">
+      <file leaf-file-name="credit_DS.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_DS.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+            <state relative-caret-position="959">
+              <caret line="57" column="3" lean-forward="true" selection-start-line="57" selection-start-column="3" selection-end-line="57" selection-end-column="3" />
               <folding>
-                <element signature="e#5019#5217#0" expanded="false" />
-                <element signature="e#7767#7853#0" expanded="false" />
+                <element signature="e#27#73#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Experiments.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/scala/wwd/main/Experiments.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="218">
+              <caret line="28" column="46" lean-forward="true" selection-start-line="28" selection-start-column="35" selection-end-line="28" selection-end-column="46" />
+              <folding>
+                <element signature="e#17#44#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -62,18 +71,30 @@
       <file leaf-file-name="InterlockTools.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/InterlockTools.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1800">
-              <caret line="101" column="38" lean-forward="false" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
+            <state relative-caret-position="-2570">
+              <caret line="17" column="23" lean-forward="false" selection-start-line="17" selection-start-column="23" selection-end-line="17" selection-end-column="23" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TidalTrust.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/TidalTrust.scala">
+      <file leaf-file-name="OracleDBUtil.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/OracleDBUtil.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="12" column="45" lean-forward="true" selection-start-line="12" selection-start-column="45" selection-end-line="12" selection-end-column="45" />
+            <state relative-caret-position="-1940">
+              <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+              <folding>
+                <element signature="e#20#54#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="InfluEdgeAttr.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/InfluEdgeAttr.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="18">
+              <caret line="9" column="6" lean-forward="false" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -82,8 +103,8 @@
       <file leaf-file-name="ALRunner.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/ALRunner.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="14" column="37" lean-forward="true" selection-start-line="14" selection-start-column="37" selection-end-line="14" selection-end-column="37" />
+            <state relative-caret-position="476">
+              <caret line="63" column="0" lean-forward="true" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
               <folding>
                 <element signature="e#22#73#0" expanded="true" />
               </folding>
@@ -91,66 +112,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="credit_Fuzz.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_Fuzz.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="18" column="17" lean-forward="true" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PeerTrust.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/PeerTrust.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="19" column="5" lean-forward="true" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PageRank.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/PageRank.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="9" column="42" lean-forward="false" selection-start-line="9" selection-start-column="42" selection-end-line="9" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="credit_DS.scala" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_DS.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
-              <caret line="38" column="30" lean-forward="true" selection-start-line="38" selection-start-column="30" selection-end-line="38" selection-end-column="30" />
-              <folding>
-                <element signature="e#27#73#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OracleDBUtil.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/OracleDBUtil.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1406">
-              <caret line="34" column="65" lean-forward="true" selection-start-line="34" selection-start-column="65" selection-end-line="34" selection-end-column="65" />
-              <folding>
-                <element signature="e#20#54#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Measurement.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Measurement.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/scala/wwd/evaluation/Measurement.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2736">
-              <caret line="155" column="1" lean-forward="true" selection-start-line="155" selection-start-column="1" selection-end-line="155" selection-end-column="1" />
-              <folding />
+            <state relative-caret-position="134">
+              <caret line="14" column="3" lean-forward="true" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
+              <folding>
+                <element signature="e#24#56#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -167,6 +136,11 @@
       <find>method2s</find>
       <find>`</find>
       <find>method</find>
+      <find>driver</find>
+      <find>FileSystem</find>
+      <find>proxy-user</find>
+      <find>proxyUser</find>
+      <find>log</find>
     </findStrings>
     <replaceStrings>
       <replace>DSEdgeAttr</replace>
@@ -184,8 +158,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/wwd/utils/java/PoolConnection.java" />
-        <option value="$PROJECT_DIR$/src/wwd/entity/WholeEdgeAttr.scala" />
         <option value="$PROJECT_DIR$/src/wwd/entity/WholeVertexAttr.scala" />
         <option value="$PROJECT_DIR$/src/wwd/utils/xyshow/XYShowTools.scala" />
         <option value="$PROJECT_DIR$/src/wwd/entity/VertexAttr.scala" />
@@ -215,7 +187,6 @@
         <option value="$PROJECT_DIR$/src/scala/wwd/entity/impl/WholeVertexAttr.scala" />
         <option value="$PROJECT_DIR$/src/scala/wwd/utils/xyshow/XYShowTools.scala" />
         <option value="$PROJECT_DIR$/src/scala/wwd/entity/impl/InfluEdgeAttr.scala" />
-        <option value="$PROJECT_DIR$/src/scala/wwd/utils/HdfsTools.scala" />
         <option value="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_Fuzzf.scala" />
         <option value="$PROJECT_DIR$/src/scala/wwd/utils/CombineNSXY.scala" />
         <option value="$PROJECT_DIR$/src/scala/wwd/utils/MessagePropagation.scala" />
@@ -224,17 +195,20 @@
         <option value="$PROJECT_DIR$/src/resources/log4j-defaults.properties" />
         <option value="$PROJECT_DIR$/src/scala/wwd/main/test.scala" />
         <option value="$PROJECT_DIR$/src/scala/wwd/utils/OracleDBUtil.scala" />
-        <option value="$PROJECT_DIR$/src/scala/wwd/evaluation/Measurement.scala" />
         <option value="$PROJECT_DIR$/src/resources/hdfs.properties" />
-        <option value="$PROJECT_DIR$/src/resources/oracle.properties" />
-        <option value="$PROJECT_DIR$/src/resources/log4j.properties" />
-        <option value="$PROJECT_DIR$/src/scala/wwd/strategy/ALRunner.scala" />
-        <option value="$PROJECT_DIR$/src/scala/wwd/main/Experiments.scala" />
-        <option value="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_Fuzz.scala" />
-        <option value="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_DS.scala" />
+        <option value="$PROJECT_DIR$/src/java/wwd/utils/Parameters.java" />
         <option value="$PROJECT_DIR$/src/scala/wwd/strategy/impl/PageRank.scala" />
         <option value="$PROJECT_DIR$/src/scala/wwd/strategy/impl/PeerTrust.scala" />
         <option value="$PROJECT_DIR$/src/scala/wwd/strategy/impl/TidalTrust.scala" />
+        <option value="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_Fuzz.scala" />
+        <option value="$PROJECT_DIR$/src/resources/log4j.properties" />
+        <option value="$PROJECT_DIR$/src/scala/wwd/utils/HdfsTools.scala" />
+        <option value="$PROJECT_DIR$/src/resources/oracle.properties" />
+        <option value="$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_DS.scala" />
+        <option value="$PROJECT_DIR$/src/scala/wwd/strategy/ALRunner.scala" />
+        <option value="$PROJECT_DIR$/src/scala/wwd/main/Experiments.scala" />
+        <option value="$PROJECT_DIR$/src/resources/mylog4j.properties" />
+        <option value="$PROJECT_DIR$/src/scala/wwd/evaluation/Measurement.scala" />
       </list>
     </option>
   </component>
@@ -294,6 +268,7 @@
     </navigator>
     <panes>
       <pane id="AndroidView" />
+      <pane id="Scope" />
       <pane id="PackagesPane">
         <subPane>
           <expand>
@@ -323,6 +298,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -333,20 +309,31 @@
             <path>
               <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
               <item name="tpin" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tpin" type="462c0819:PsiDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tpin" type="462c0819:PsiDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
+              <item name="ShannxiInfluence_jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tpin" type="462c0819:PsiDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+              <item name="META-INF" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
               <item name="tpin" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tpin" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
@@ -366,22 +353,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="scala" type="462c0819:PsiDirectoryNode" />
               <item name="wwd" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tpin" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="wwd" type="462c0819:PsiDirectoryNode" />
-              <item name="evaluation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tpin" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="wwd" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ShannxiInfluence" type="b2602c69:ProjectViewProjectNode" />
@@ -416,8 +387,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -429,7 +398,7 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15196393" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="js-jscs-nodeInterpreter" value="D:\Program Files\nodejs\node.exe" />
@@ -1030,12 +999,15 @@
       <workItem from="1511847853653" duration="30753000" />
       <workItem from="1511938072318" duration="648000" />
       <workItem from="1511939297720" duration="1228000" />
-      <workItem from="1511941011574" duration="14551000" />
+      <workItem from="1511941011574" duration="14661000" />
+      <workItem from="1512026425459" duration="22227000" />
+      <workItem from="1512283637585" duration="13620000" />
+      <workItem from="1512395724211" duration="11740000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="673876000" />
+    <option name="totallyTimeSpent" value="721573000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="797" extended-state="0" />
@@ -1043,34 +1015,34 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3133903" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.45156696" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1764706" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18669528" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19384836" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17806268" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24964234" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="167" y="92" width="1661" height="896" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26495728" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1098,61 +1070,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://C:/Program Files (x86)/scala/src/scala-library-src.jar!/scala/collection/Iterator.scala" />
-    <entry file="jar://C:/Program Files (x86)/scala/src/scala-library-src.jar!/scala/collection/SeqLike.scala" />
-    <entry file="file://E:/Downloads/spark/spark-1.6.1/graphx/src/main/scala/org/apache/spark/graphx/lib/PageRank.scala" />
-    <entry file="file://$PROJECT_DIR$/ShannxiInfluence.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files (x86)/scala/src/scala-library-src.jar!/scala/reflect/ClassTag.scala" />
-    <entry file="jar://C:/Program Files (x86)/scala/src/scala-library-src.jar!/scala/package.scala" />
-    <entry file="jar://C:/Program Files (x86)/scala/src/scala-library-src.jar!/scala/collection/IterableLike.scala" />
-    <entry file="file://E:/Downloads/spark/spark-1.6.1/graphx/src/main/scala/org/apache/spark/graphx/Pregel.scala" />
-    <entry file="file://E:/Downloads/spark/spark-1.6.1/graphx/src/main/scala/org/apache/spark/graphx/GraphOps.scala" />
-    <entry file="jar://C:/Program Files (x86)/scala/src/scala-library-src.jar!/scala/collection/immutable/Range.scala" />
-    <entry file="file://$PROJECT_DIR$/src/resources/InputCsv/vertices.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="26" lean-forward="false" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/resources/InputCsv/edges.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="15" lean-forward="true" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../spark-2.2.0/assembly/target/scala-2.11/jars/spark-graphx_2.11-2.2.0.jar!/org/apache/spark/graphx/Graph.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="21" column="6" lean-forward="false" selection-start-line="21" selection-start-column="6" selection-end-line="21" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/src.zip!/java/text/SimpleDateFormat.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="420" column="13" lean-forward="false" selection-start-line="420" selection-start-column="13" selection-end-line="420" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/../spark-2.2.0/assembly/target/scala-2.11/jars/spark-sql_2.11-2.2.0.jar!/org/apache/spark/sql/execution/datasources/jdbc/JdbcUtils.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
           <caret line="1" column="7" lean-forward="false" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/VertexAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -1174,34 +1095,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-406">
           <caret line="37" column="34" lean-forward="true" selection-start-line="37" selection-start-column="34" selection-end-line="37" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/WholeVertexAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1172">
-          <caret line="10" column="23" lean-forward="true" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/WholeEdgeAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-212">
-          <caret line="38" column="21" lean-forward="false" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/InfluVertexAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/InfluEdgeAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6">
-          <caret line="9" column="6" lean-forward="false" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -1232,19 +1125,293 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/main/Main.scala">
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/main/Main.scala" />
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/main/test.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="17" lean-forward="false" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
-          <folding />
+        <state relative-caret-position="108">
+          <caret line="6" column="26" lean-forward="true" selection-start-line="6" selection-start-column="26" selection-end-line="6" selection-end-column="26" />
+          <folding>
+            <element signature="e#1185#2826#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/resources/hdfs.properties" />
+    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.11.8-sources.jar!/scala/Predef.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="100" column="6" lean-forward="false" selection-start-line="100" selection-start-column="6" selection-end-line="100" selection-end-column="6" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/scala/wwd/main/XYShow.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-464">
+        <state relative-caret-position="5">
           <caret line="14" column="17" lean-forward="true" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/encodings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/misc.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/uiDesigner.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1890">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/vcs.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-26964">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tpin.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="9" lean-forward="true" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/out/META-INF/MANIFEST.MF">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../ojdbc_all/ojdbc8_12.2.0.1.jar!/META-INF/MANIFEST.MF">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="25" lean-forward="true" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/wwd/utils/Parameters.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="17" column="34" lean-forward="false" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/InfluVertexAttr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/WholeEdgeAttr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/WholeVertexAttr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="10" column="23" lean-forward="false" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/EdgeAttr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="15" lean-forward="false" selection-start-line="2" selection-start-column="15" selection-end-line="2" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/VertexAttr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="1" lean-forward="false" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../spark-2.2.0/assembly/target/scala-2.11/jars/spark-graphx_2.11-2.2.0.jar!/org/apache/spark/graphx/Graph.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="6" lean-forward="false" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../spark-2.2.0/assembly/target/scala-2.11/jars/spark-core_2.11-2.2.0.jar!/org/apache/spark/deploy/SparkSubmit.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="7" lean-forward="false" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../spark-2.2.0/core/src/main/scala/org/apache/spark/deploy/SparkSubmitArguments.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-428">
+          <caret line="195" column="70" lean-forward="false" selection-start-line="195" selection-start-column="54" selection-end-line="195" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../spark-2.2.0/core/src/main/scala/org/apache/spark/deploy/SparkSubmit.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="597">
+          <caret line="112" column="34" lean-forward="true" selection-start-line="112" selection-start-column="34" selection-end-line="112" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/PeerTrust.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="16" column="8" lean-forward="false" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/PageRank.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="9" column="15" lean-forward="false" selection-start-line="9" selection-start-column="15" selection-end-line="9" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/resources/mylog4j.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="332">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/TidalTrust.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="22" column="9" lean-forward="false" selection-start-line="22" selection-start-column="9" selection-end-line="22" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_Fuzz.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="37" column="23" lean-forward="true" selection-start-line="37" selection-start-column="23" selection-end-line="37" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/resources/oracle.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="19" lean-forward="true" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/HdfsTools.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="e#5019#5217#0" expanded="false" />
+            <element signature="e#7767#7853#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/OracleDBUtil.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1940">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="e#20#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/impl/InfluEdgeAttr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="9" column="6" lean-forward="false" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/InterlockTools.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2570">
+          <caret line="17" column="23" lean-forward="false" selection-start-line="17" selection-start-column="23" selection-end-line="17" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/main/Experiments.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="28" column="46" lean-forward="true" selection-start-line="28" selection-start-column="35" selection-end-line="28" selection-end-column="46" />
+          <folding>
+            <element signature="e#17#44#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_DS.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="959">
+          <caret line="57" column="3" lean-forward="true" selection-start-line="57" selection-start-column="3" selection-end-line="57" selection-end-column="3" />
+          <folding>
+            <element signature="e#27#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/ALRunner.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="63" column="0" lean-forward="true" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding>
+            <element signature="e#22#73#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1264,22 +1431,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/wwd/utils/Parameters.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/entity/EdgeAttr.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="15" lean-forward="false" selection-start-line="2" selection-start-column="15" selection-end-line="2" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/java/wwd/utils/CSVProcess.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
@@ -1288,143 +1439,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/main/test.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="26" lean-forward="true" selection-start-line="6" selection-start-column="26" selection-end-line="6" selection-end-column="26" />
-          <folding>
-            <element signature="e#1185#2826#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/resources/hdfs.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/resources/oracle.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="7" column="12" lean-forward="true" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/resources/log4j.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="25" column="27" lean-forward="false" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.11.8-sources.jar!/scala/Predef.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="100" column="6" lean-forward="false" selection-start-line="100" selection-start-column="6" selection-end-line="100" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/main/Experiments.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="127" column="33" lean-forward="false" selection-start-line="127" selection-start-column="33" selection-end-line="127" selection-end-column="33" />
-          <folding>
-            <element signature="e#17#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/PageRank.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="9" column="42" lean-forward="false" selection-start-line="9" selection-start-column="42" selection-end-line="9" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/PeerTrust.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="19" column="5" lean-forward="true" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/TidalTrust.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="12" column="45" lean-forward="true" selection-start-line="12" selection-start-column="45" selection-end-line="12" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_Fuzz.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="18" column="17" lean-forward="true" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/ALRunner.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="37" lean-forward="true" selection-start-line="14" selection-start-column="37" selection-end-line="14" selection-end-column="37" />
-          <folding>
-            <element signature="e#22#73#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/scala/wwd/evaluation/Measurement.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2736">
-          <caret line="155" column="1" lean-forward="true" selection-start-line="155" selection-start-column="1" selection-end-line="155" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/OracleDBUtil.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1406">
-          <caret line="34" column="65" lean-forward="true" selection-start-line="34" selection-start-column="65" selection-end-line="34" selection-end-column="65" />
+        <state relative-caret-position="134">
+          <caret line="14" column="3" lean-forward="true" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
           <folding>
-            <element signature="e#20#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/HdfsTools.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-          <folding>
-            <element signature="e#5019#5217#0" expanded="false" />
-            <element signature="e#7767#7853#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/utils/InterlockTools.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1800">
-          <caret line="101" column="38" lean-forward="false" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/scala/wwd/strategy/impl/credit_DS.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="38" column="30" lean-forward="true" selection-start-line="38" selection-start-column="30" selection-end-line="38" selection-end-column="30" />
-          <folding>
-            <element signature="e#27#73#0" expanded="true" />
+            <element signature="e#24#56#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1497,7 +1517,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>jars</last-edited>
+          <last-edited>ojdbc8_12.2.0.1</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

@@ -4,11 +4,12 @@ import org.apache.spark.{SparkContext, graphx}
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.slf4j.LoggerFactory
 import wwd.entity.impl.{InfluEdgeAttr, InfluVertexAttr, WholeEdgeAttr, WholeVertexAttr}
 import wwd.entity.{EdgeAttr, VertexAttr}
 import wwd.evaluation.PREF
 import wwd.strategy.ALRunner
-import wwd.utils.{HdfsTools, OracleDBUtil, InterlockTools}
+import wwd.utils.{HdfsTools, InterlockTools, OracleDBUtil, Parameters}
 
 import scala.collection.Seq
 import scala.reflect.ClassTag
@@ -33,12 +34,27 @@ class credit_DS(var alpha: Double = 0.5,
                 var method: Int = 1,
                 var lambda: Int = 1,
                 val forceReConstruct:Boolean=false
-               ) extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAttr, ResultEdgeAttr] {
-  var message1:String = s"DS powered by ${credit_DS.method1s.get(1).get}"
-  var message2:String = credit_DS.method2s.get(lambda).get
-  var message3:String = "加权偏移"
+               ) extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAttr, ResultEdgeAttr](){
+  val log = LoggerFactory.getLogger(this.getClass.getName.stripSuffix("$"))
+  val message1:String = s"DS powered by ${credit_DS.method1s.get(1).get}"
+  val message2:String = credit_DS.method2s.get(lambda).get
+  val message3:String = "加权偏移"
+  val hdfsDir:String = Parameters.Dir
   override def description:String={
     s"${this.getClass.getSimpleName}:影响力计算方法:${message1} 传递影响计算方法:${message2} 融合方法:${message3}"
+  }
+  override def showDimension[VD, ED](graph: Graph[VD, ED], title: String): Unit ={
+    log.info(s"\r${title}=>edges:${graph.edges.count()},vertices:${graph.vertices.count()}")
+  }
+
+  def getOrReadTpin(paths: Seq[String], forceReConstruct: Boolean) = {
+    if (!HdfsTools.Exist(sc, paths(0)) || !HdfsTools.Exist(sc,paths(1)) || forceReConstruct) {
+      val tpin = HdfsTools.getFromOracleTable2(session).persist()
+      showDimension(tpin, "从Oracle读入")
+      persist(tpin, paths)
+    }else{
+      HdfsTools.getFromObjectFile[WholeVertexAttr, WholeEdgeAttr](sc, paths(0),paths(1)).persist()
+    }
   }
   /**
     * Author: weiwenda
@@ -46,20 +62,17 @@ class credit_DS(var alpha: Double = 0.5,
     * Date: 下午4:22 2017/11/28
     */
   override def getGraph(sc: SparkContext, session: SparkSession) = {
+    val paths = Seq(s"${hdfsDir}/vertices", s"${hdfsDir}/edges")
     //annotation of david:forceReConstruct=true表示强制重新构建原始TPIN,默认不强制
-    if (!HdfsTools.Exist(sc, "/tpin/wwd/influence/vertices") || forceReConstruct) {
-      val tpin = HdfsTools.getFromOracleTable2(session).persist()
-      println("\nafter construct:  \n" + tpin.vertices.count)
-      println(tpin.edges.count)
-      HdfsTools.saveAsObjectFile(tpin, sc, "/tpin/wwd/influence/whole_vertices", "/tpin/wwd/influence/whole_edges")
-
-      val tpinFromObject = HdfsTools.getFromObjectFile[WholeVertexAttr, WholeEdgeAttr](sc, "/tpin/wwd/influence/whole_vertices", "/tpin/wwd/influence/whole_edges")
+    if (!HdfsTools.Exist(sc,paths(0)) || !HdfsTools.Exist(sc,paths(1)) || forceReConstruct) {
+      val tpin = getOrReadTpin(Seq( s"${hdfsDir}/whole_vertices", s"${hdfsDir}/whole_edges"),forceReConstruct)
       //annotation of david:这里的互锁边为董事会互锁边
-      val tpinWithIL = InterlockTools.addIL(tpinFromObject, weight = 0.0, degree = 1).persist()
+      val tpinWithIL = InterlockTools.addIL(tpin, weight = 0.0, degree = 1).persist()
       val tpinOnlyCompany = InterlockTools.transform(tpinWithIL)
-      HdfsTools.saveAsObjectFile(tpinOnlyCompany, sc, "/tpin/wwd/influence/vertices_init", "/tpin/wwd/influence/edges_init")
+      persist(tpinOnlyCompany,paths)
+    }else{
+      HdfsTools.getFromObjectFile[InfluVertexAttr, InfluEdgeAttr](sc, paths(0), paths(1))
     }
-    HdfsTools.getFromObjectFile[InfluVertexAttr, InfluEdgeAttr](sc, "/tpin/wwd/influence/vertices", "/tpin/wwd/influence/edges")
   }
 
   /**
@@ -69,12 +82,18 @@ class credit_DS(var alpha: Double = 0.5,
     * Date: 下午6:52 2017/11/28
     */
   override def adjust(graph: Graph[InfluVertexAttr, InfluEdgeAttr]): Graph[ResultVertexAttr, ResultEdgeAttr] = {
-    val influenceGraph = computeInfluence(graph).mapVertices((vid, vattr) => (vattr.xyfz, vattr.wtbz))
-    val savePath = Seq("/tpin/wwd/influence/inf_vertices", "/tpin/wwd/influence/inf_edges")
-    val influenceGraph1 = persist(influenceGraph,savePath)
-    //annotation of david:修正后听影响力网络 vertices:93523 edges:1850050
-    // fixedGraph: Graph[Int, Double] 点属性为修正后的信用评分，边属性仍为影响力值
-    computeCreditScore(influenceGraph1)
+    val savePaths = Seq(s"${hdfsDir}/inf_vertices_${this.getClass.getSimpleName}",
+      s"${hdfsDir}/inf_edges_${this.getClass.getSimpleName}")
+    //annotation of david:forceReConstruct=true表示强制重新构建TPIN,默认不强制
+    if (!HdfsTools.Exist(sc, savePaths(0)) || !HdfsTools.Exist(sc,savePaths(1)) || forceReConstruct) {
+      val influenceGraph = computeInfluence(graph).mapVertices((vid, vattr) => (vattr.xyfz, vattr.wtbz))
+      //annotation of david:修正后听影响力网络 vertices:93523 edges:1850050
+      // fixedGraph: Graph[Int, Double] 点属性为修正后的信用评分，边属性仍为影响力值
+      val fixedGraph = computeCreditScore(influenceGraph)
+      persist(fixedGraph, savePaths)
+    }else{
+      HdfsTools.getFromObjectFile[ResultVertexAttr, ResultEdgeAttr] (sc, savePaths(0),savePaths(1))
+    }
   }
 
   override def persist(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): Unit = {
@@ -285,7 +304,7 @@ class credit_DS(var alpha: Double = 0.5,
 
 object credit_DS {
   def main(args: Array[String]): Unit = {
-    val instance = new credit_DS()
+    val instance = new credit_DS(forceReConstruct = true)
     instance.run()
     instance.evaluation(PREF())
     instance.persist(instance.fixedGraph)
