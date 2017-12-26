@@ -14,7 +14,7 @@ class InfluEdgeAttr extends EdgeAttr with Serializable {
     var il_bl: Double = 0.0
 
 
-    override def toString(): String = {
+    override def toString(): String =  {
         var toReturn = ""
         val formater = new DecimalFormat("#.###")
         if(il_bl > 0){

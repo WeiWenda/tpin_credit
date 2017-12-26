@@ -6,7 +6,7 @@
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/out/META-INF/MANIFEST.MF" />
       </element>
-      <element id="extracted-dir" path="$PROJECT_DIR$/../ojdbc_all/ojdbc8_12.2.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/Downloads/spark/ojdbc_all/ojdbc8_12.2.0.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

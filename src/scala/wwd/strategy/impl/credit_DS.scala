@@ -1,5 +1,6 @@
 package wwd.strategy.impl
 
+import org.apache.spark.deploy.SparkSubmit
 import org.apache.spark.{SparkContext, graphx}
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
@@ -33,12 +34,14 @@ class credit_DS(var alpha: Double = 0.5,
                 var bypass: Boolean = true,
                 var method: Int = 1,
                 var lambda: Int = 1,
-                val forceReConstruct:Boolean=false
+                val forceReConstruct:Boolean=false,
+                val forceReAdjust:Boolean = false
                ) extends ALRunner[InfluVertexAttr, InfluEdgeAttr, ResultVertexAttr, ResultEdgeAttr](){
+  SparkSubmit
   val log = LoggerFactory.getLogger(this.getClass.getName.stripSuffix("$"))
-  val message1:String = s"DS powered by ${credit_DS.method1s.get(1).get}"
-  val message2:String = credit_DS.method2s.get(lambda).get
-  val message3:String = "加权偏移"
+  lazy val message1:String = s"DS powered by ${credit_DS.method1s.get(1).get}"
+  lazy val message2:String = credit_DS.method2s.get(lambda).get
+  lazy val message3:String = "加权偏移"
   val hdfsDir:String = Parameters.Dir
   override def description:String={
     s"${this.getClass.getSimpleName}:影响力计算方法:${message1} 传递影响计算方法:${message2} 融合方法:${message3}"
@@ -62,10 +65,10 @@ class credit_DS(var alpha: Double = 0.5,
     * Date: 下午4:22 2017/11/28
     */
   override def getGraph(sc: SparkContext, session: SparkSession) = {
-    val paths = Seq(s"${hdfsDir}/vertices", s"${hdfsDir}/edges")
+    val paths = Seq(s"${hdfsDir}/addil_vertices", s"${hdfsDir}/addil_edges")
     //annotation of david:forceReConstruct=true表示强制重新构建原始TPIN,默认不强制
     if (!HdfsTools.Exist(sc,paths(0)) || !HdfsTools.Exist(sc,paths(1)) || forceReConstruct) {
-      val tpin = getOrReadTpin(Seq( s"${hdfsDir}/whole_vertices", s"${hdfsDir}/whole_edges"),forceReConstruct)
+      val tpin = getOrReadTpin(Seq( s"${hdfsDir}/init_vertices", s"${hdfsDir}/init_edges"),forceReConstruct)
       //annotation of david:这里的互锁边为董事会互锁边
       val tpinWithIL = InterlockTools.addIL(tpin, weight = 0.0, degree = 1).persist()
       val tpinOnlyCompany = InterlockTools.transform(tpinWithIL)
@@ -85,7 +88,7 @@ class credit_DS(var alpha: Double = 0.5,
     val savePaths = Seq(s"${hdfsDir}/inf_vertices_${this.getClass.getSimpleName}",
       s"${hdfsDir}/inf_edges_${this.getClass.getSimpleName}")
     //annotation of david:forceReConstruct=true表示强制重新构建TPIN,默认不强制
-    if (!HdfsTools.Exist(sc, savePaths(0)) || !HdfsTools.Exist(sc,savePaths(1)) || forceReConstruct) {
+    if (!HdfsTools.Exist(sc, savePaths(0)) || !HdfsTools.Exist(sc,savePaths(1)) || forceReAdjust) {
       val influenceGraph = computeInfluence(graph).mapVertices((vid, vattr) => (vattr.xyfz, vattr.wtbz))
       //annotation of david:修正后听影响力网络 vertices:93523 edges:1850050
       // fixedGraph: Graph[Int, Double] 点属性为修正后的信用评分，边属性仍为影响力值
@@ -136,9 +139,10 @@ class credit_DS(var alpha: Double = 0.5,
   def computeCreditScore(influenceGraph: Graph[(Int, Boolean), Double]): Graph[ResultVertexAttr, ResultEdgeAttr] = {
     val fzMessage = influenceGraph.aggregateMessages[Seq[(Int, Double)]](ctx =>
       if (ctx.srcAttr._1 > 0 && ctx.dstAttr._1 > 0) {
-        //&& ctx.srcAttr._1 < 90 && ctx.dstAttr._1 < 90
-        val weight = ctx.attr //* (100 - ctx.srcAttr._1) / 100D
-        ctx.sendToDst(Seq((ctx.srcAttr._1, weight)))
+        if(ctx.srcAttr._1<80)
+          ctx.sendToDst(Seq((ctx.srcAttr._1, ctx.attr)))
+        if(ctx.dstAttr._1<80)
+          ctx.sendToSrc(Seq((ctx.dstAttr._1, ctx.attr)))
       }, _ ++ _).cache()
 
     val fixAlreadyGraph = influenceGraph.outerJoinVertices(fzMessage) {
@@ -149,27 +153,27 @@ class credit_DS(var alpha: Double = 0.5,
           (vattr._1, _AggregateMessage(vattr, listMessage.get, alpha), vattr._2)
         }
     }.cache()
-    val fzMessage2 = fixAlreadyGraph.aggregateMessages[Seq[(Int, Double)]](ctx =>
-      if (ctx.dstAttr._1 == 0 && ctx.srcAttr._1 > 0) {
-        //(ctx.dstAttr._1 == 0|| ctx.dstAttr._1 >90 ) && ctx.srcAttr._1 > 0 && ctx.srcAttr._1 < 90
-        //annotation of david:分数越低的企业影响力越大
-        val weight = ctx.attr * (100 - ctx.srcAttr._2) * (100 - ctx.srcAttr._2)
-        ctx.sendToDst(Seq((ctx.srcAttr._2, weight)))
-      }, _ ++ _).cache()
-    val fixNotyetGraph = fixAlreadyGraph.outerJoinVertices(fzMessage2) {
-      case (vid, vattr, listMessage) =>
-        if (listMessage.isEmpty)
-          vattr
-        else {
-          (vattr._1, _AggregateMessage(listMessage.get), vattr._3)
-        }
-    }.cache()
-
-    fzMessage.unpersist(blocking = false)
-    fzMessage2.unpersist(blocking = false)
-    fixAlreadyGraph.unpersistVertices(blocking = false)
-    fixAlreadyGraph.edges.unpersist(blocking = false)
-
+//    val fzMessage2 = fixAlreadyGraph.aggregateMessages[Seq[(Int, Double)]](ctx =>
+//      if (ctx.dstAttr._1 == 0 && ctx.srcAttr._1 > 0) {
+//        //(ctx.dstAttr._1 == 0|| ctx.dstAttr._1 >90 ) && ctx.srcAttr._1 > 0 && ctx.srcAttr._1 < 90
+//        //annotation of david:分数越低的企业影响力越大
+//        val weight = ctx.attr * (100 - ctx.srcAttr._2) * (100 - ctx.srcAttr._2)
+//        ctx.sendToDst(Seq((ctx.srcAttr._2, weight)))
+//      }, _ ++ _).cache()
+//    val fixNotyetGraph = fixAlreadyGraph.outerJoinVertices(fzMessage2) {
+//      case (vid, vattr, listMessage) =>
+//        if (listMessage.isEmpty)
+//          vattr
+//        else {
+//          (vattr._1, _AggregateMessage(listMessage.get), vattr._3)
+//        }
+//    }.cache()
+//
+//    fzMessage.unpersist(blocking = false)
+//    fzMessage2.unpersist(blocking = false)
+//    fixAlreadyGraph.unpersistVertices(blocking = false)
+//    fixAlreadyGraph.edges.unpersist(blocking = false)
+    val fixNotyetGraph = fixAlreadyGraph
     val max = fixNotyetGraph.vertices.map(_._2._2).max()
     println(max)
     fixNotyetGraph.mapVertices { case (vid, (old, newfz, wtbz)) => ResultVertexAttr(old, (newfz / max.toDouble * 100).toInt, wtbz) }
@@ -296,13 +300,14 @@ class credit_DS(var alpha: Double = 0.5,
     val totalWeight = listMessage.map(e => e._2 * (110 - e._1) / 100D).sum
     var before = 0D
     listMessage.foreach { case (cur_fx, weight) => before += cur_fx * weight * (110 - cur_fx) / 100D / totalWeight }
-    val result = alpha * xyfz._1 / 10 + (1 - alpha) * before
+    val result = alpha * xyfz._1 + (1 - alpha) * before
     result.toInt
 
   }
 }
 
 object credit_DS {
+
   def main(args: Array[String]): Unit = {
     val instance = new credit_DS(forceReConstruct = true)
     instance.run()
@@ -312,9 +317,10 @@ object credit_DS {
     instance.persist[ResultVertexAttr, ResultEdgeAttr](instance.fixedGraph, outputPaths)
   }
   val method1s = Map(1->"maxmin",2->"proba",3->"bouned",4->"ds",5->"TidalTrust",6->"fuzz")
-  val method2s = Map(1 ->"min",2 ->"product",3 -> "(a * b) / (a + b - a * b)",4->"a + b - 1")
+  val method2s = Map(1 ->"min",2 ->"product",3 -> "Hamacher",4->"Luka")
   type Path = Seq[(VertexId, String, Double, Double, InfluEdgeAttr)]
   type Paths = Seq[Seq[(VertexId, String, Double, Double, InfluEdgeAttr)]]
+
 
   def computeCI(srclist: Seq[(String, Double)], dstlist: Seq[(String, Double)], kind: Int): Double = {
 
@@ -371,7 +377,6 @@ object credit_DS {
 
     Graph[VD, DSEdgeAttr](belAndPl.vertices, filtered_edges).persist()
   }
-
   //annotation of david:收集所有长度initlength-1到maxIteration-1的路径
   def getPath(graph: Graph[Paths, DSEdgeAttr], maxIteratons: Int = Int.MaxValue, initLength: Int = 1) = {
     // 发送路径
@@ -409,27 +414,94 @@ object credit_DS {
     //         printGraph[Paths,Int](preproccessedGraph)
     preproccessedGraph.vertices
   }
+  /**
+   *Author:weiwenda
+   *Description:泛型版的选择TopN邻居
+    *  belAndPl为需要简化的图
+    *  getWeight是从边属性中选择比较项的带入函数
+    *  selectTopN为所要选择的N
+   *Date:17:22 2017/12/21
+   */
+  def simpleGraph[VD: ClassTag,ED:ClassTag](belAndPl: Graph[VD,ED],getWeight:((Long,ED))=>Double, selectTopN: Int = 20): Graph[VD, ED] = {
+    def sendMessage(edge: EdgeContext[VD, ED, Seq[(VertexId, ED)]]): Unit = {
+      edge.sendToSrc(Seq((edge.dstId, edge.attr)))
+    }
+
+    val messages = belAndPl.aggregateMessages[Seq[(VertexId, ED)]](sendMessage(_), _ ++ _).cache()
+
+    val filtered_edges = messages.map { case (vid, edgelist) =>
+      (vid, edgelist.sortBy[Double](getWeight)(Ordering[Double].reverse).slice(0, selectTopN))
+    }.flatMap { case (vid, edgelist) => edgelist.map(e => Edge(vid, e._1, e._2)) }
 
 
+    Graph[VD, ED](belAndPl.vertices, filtered_edges).persist()
+  }
+  /**
+   *Author:weiwenda
+   *Description:泛型版收集所有长度initlength到maxIteration的路径
+    * graph为输入图
+    * sendMsg用于带入每次所发消息
+    * reduceMsg用于点层聚合消息，一般为_++_
+    * maxIteratons 与 initLength共同决定迭代终点，最终的路径Seq长度为maxIteratons+1,最短的路径Seq长度为initLength
+   *Date:17:25 2017/12/21
+   */
+  def getPathGeneric[VD:ClassTag,ED:ClassTag](graph: Graph[VD, ED],
+              sendMsg:(EdgeContext[VD, ED,VD], Int)=>Unit,
+              reduceMsg:(VD,VD)=>VD,
+              maxIteratons: Int = Int.MaxValue, initLength: Int = 1) = {
+    // 发送路径
+    var preproccessedGraph = graph.cache()
+    var i = initLength
+    var messages = preproccessedGraph.aggregateMessages[VD](sendMsg(_, i),reduceMsg)
+    var activeMessages = messages.count()
+    var prevG: Graph[VD, ED] = null
+    while (activeMessages > 0 && i <= maxIteratons) {
+      prevG = preproccessedGraph
+      preproccessedGraph = preproccessedGraph.joinVertices[VD](messages)((id, vd, path) => reduceMsg(vd,path)).cache()
+      print("iterator " + i + " finished! ")
+      i += 1
+      if(i<=maxIteratons){
+        val oldMessages = messages
+        messages = preproccessedGraph.aggregateMessages[VD](sendMsg(_, i), reduceMsg).cache()
+        try {
+          activeMessages = messages.count()
+        } catch {
+          case ex: Exception =>
+            println("又发生异常了")
+        }
+        oldMessages.unpersist(blocking = false)
+        prevG.unpersistVertices(blocking = false)
+        prevG.edges.unpersist(blocking = false)
+      }
+    }
+    //         printGraph[Paths,Int](preproccessedGraph)
+    preproccessedGraph.vertices
+  }
   //annotation of david:针对图结构的shared segment和crossing segment进行修改TODO
   def graphReduce[T <: Iterable[Seq[(graphx.VertexId, String, Double, Double, EdgeAttr)]]](vattr: T): T = {
     vattr
   }
 
   //annotation of david:使用frank t-norm聚合路径上的影响值，vid,bel,pl
-  def combineInfluence(x: (graphx.VertexId, String, Double, Double, InfluEdgeAttr), y: (graphx.VertexId, String, Double, Double, InfluEdgeAttr), lambda: Int) = {
-    val plambda = 0.001
-    val a = x._4
-    val b = y._4
-    var pTrust = 0D
+  def combineInfluence(x: (VertexId, String, Double, Double, InfluEdgeAttr),
+                       y: (VertexId, String, Double, Double, InfluEdgeAttr),
+                       lambda: Int): (VertexId, String, Double, Double, InfluEdgeAttr) = {
+    val (vid,pTrust) = combineInfluence((x._1,x._4),(y._1,y._4),lambda)
     val unc = x._4 + y._4 - y._3
-    if (lambda == 0) pTrust = a.min(b)
-    else if (lambda == 1) pTrust = a * b
+    (vid, "", pTrust, unc, y._5)
+  }
+  def combineInfluence(x: (VertexId, Double), y: (VertexId, Double), lambda: PartitionID):(VertexId,Double) = {
+    val plambda = 0.001
+    var pTrust = 0D
+    val a = x._2
+    val b = y._2
+    if (lambda == 1) pTrust = a.min(b)
+    else if (lambda == 2) pTrust = a * b
     //        else if (lambda == Integer.MAX_VALUE) pTrust = (a + b - 1).max(0.0)
-    else if (lambda == 3) pTrust = (a + b - 1).max(0.0)
-    else if (lambda == 2) pTrust = (a * b) / (a + b - a * b)
+    else if (lambda == 3) pTrust = (a * b) / (a + b - a * b)
+    else if (lambda == 4) pTrust = (a + b - 1).max(0.0)
     else pTrust = Math.log(1 + (((Math.pow(plambda, a) - 1) * ((Math.pow(plambda, b) - 1))) / (plambda - 1))) / Math.log(plambda)
-    (y._1, "", pTrust, unc, y._5)
+    (y._1,pTrust)
   }
 
   //annotation of david:增加考虑源点企业和终点企业的控制人亲密度，以及多条路径，得到标量的影响值，加权平均

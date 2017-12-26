@@ -131,7 +131,7 @@ object HdfsTools {
       eattr.se = row.getAs[BigDecimal]("se").doubleValue()
       eattr.trade_je = row.getAs[BigDecimal]("je").doubleValue()
       eattr.taxrate = row.getAs[BigDecimal]("sl").doubleValue()
-      ((row.getAs[BigDecimal]("xf_VERTEXID").longValue(), row.getAs[BigDecimal]("gf_VERTEXID").longValue()), eattr)
+      ((row.getAs[BigDecimal]("gf_VERTEXID").longValue(),row.getAs[BigDecimal]("xf_VERTEXID").longValue()), eattr)
     }
     val fddb_pc = fddbr_DF.select("VERTEXID", "ZJHM").
       rdd.map(row => (row.getAs[String](1), row.getAs[BigDecimal](0).longValue())).
