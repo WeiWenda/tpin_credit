@@ -116,6 +116,37 @@ case class ROC() extends Measurement[ResultVertexAttr, ResultEdgeAttr, TwoResult
     TwoResult(computeROC(graph, "old"), computeROC(graph, "new"))
   }
 }
+/**
+  * Author:weiwenda
+  * Description:绘制PR曲线
+  * Date:22:32 2017/12/26
+  */
+case class PR() extends Measurement[ResultVertexAttr, ResultEdgeAttr, TwoResult[Seq[(Double,Double)]]] {
+  def computePR(graph: Graph[ResultVertexAttr, ResultEdgeAttr], switcher: String) = {
+    var collection: RDD[(VertexId, (ResultVertexAttr, Long))] = null
+    switcher match {
+      case "old" =>
+        collection = graph.vertices.filter(_._2.old_fz > 0).sortBy(_._2.old_fz).zipWithIndex().
+          map { case ((vid, vattr), index) => (vid, (vattr, index)) }
+      case "new" =>
+        collection = graph.vertices.filter(_._2.old_fz > 0).sortBy(_._2.new_fz).zipWithIndex().
+          map { case ((vid, vattr), index) => (vid, (vattr, index)) }
+    }
+    val granularity = collection.count / 100 + 1
+    val focus = collection.filter(_._2._1.wtbz).count.toDouble
+    val nonfocus = collection.filter(!_._2._1.wtbz).count.toDouble
+    Range(1, 101).
+      map { case index =>
+        val recall = collection.filter(e => e._2._2 < index * granularity && e._2._1.wtbz).count / focus
+        val precise = collection.filter(e => e._2._2 < index * granularity && e._2._1.wtbz).count /
+          collection.filter(e => e._2._2 < index * granularity).count.toDouble
+        (recall,precise)
+      }
+  }
+  override def compute(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): TwoResult[Seq[(Double,Double)]] = {
+    TwoResult(computePR(graph, "old"), computePR(graph, "new"))
+  }
+}
 
 /**
   * Author: weiwenda
