@@ -1,7 +1,5 @@
 # ---> Scala
-*.class
 *.log
-*.xml
 *.iml
 
 # sbt specific
