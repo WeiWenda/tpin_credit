@@ -6,7 +6,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import wwd.entity.EdgeAttr
 import wwd.entity.impl.{InfluEdgeAttr, InfluVertexAttr}
-import wwd.utils.{HdfsTools, OracleDBUtil}
+import wwd.utils.{HdfsTools, OracleTools}
 
 import scala.collection.{ Seq}
 import scala.collection.mutable.HashMap

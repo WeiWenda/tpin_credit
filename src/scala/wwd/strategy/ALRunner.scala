@@ -5,7 +5,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.graphx.Graph
 import org.apache.spark.sql.SparkSession
 import wwd.strategy.impl.{ResultEdgeAttr, ResultVertexAttr}
-import wwd.utils.{HdfsTools, OracleDBUtil}
+import wwd.utils.{HdfsTools, OracleTools}
 
 import scala.collection.Seq
 import scala.reflect.ClassTag

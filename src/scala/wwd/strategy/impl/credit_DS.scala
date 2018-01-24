@@ -10,7 +10,7 @@ import wwd.entity.impl.{InfluEdgeAttr, InfluVertexAttr, WholeEdgeAttr, WholeVert
 import wwd.entity.{EdgeAttr, VertexAttr}
 import wwd.evaluation.PREF
 import wwd.strategy.ALRunner
-import wwd.utils.{HdfsTools, InterlockTools, OracleDBUtil, Parameters}
+import wwd.utils.{HdfsTools, InterlockTools, OracleTools, Parameters}
 
 import scala.collection.Seq
 import scala.reflect.ClassTag
@@ -52,7 +52,7 @@ class credit_DS(var alpha: Double = 0.5,
 
   def getOrReadTpin(paths: Seq[String], forceReConstruct: Boolean) = {
     if (!HdfsTools.Exist(sc, paths(0)) || !HdfsTools.Exist(sc,paths(1)) || forceReConstruct) {
-      val tpin = HdfsTools.getFromOracleTable2(session).persist()
+      val tpin = OracleTools.getFromOracleTable2(session).persist()
       showDimension(tpin, "从Oracle读入")
       persist(tpin, paths)
     }else{
@@ -101,7 +101,7 @@ class credit_DS(var alpha: Double = 0.5,
 
   override def persist(graph: Graph[ResultVertexAttr, ResultEdgeAttr]): Unit = {
     //annotation of david:bypass=true表示跳过边表的输出
-    OracleDBUtil.saveFinalScore(fixedGraph, session, vertex_dst = "WWD_INFLUENCE_RESULT", bypass = true)
+    OracleTools.saveFinalScore(fixedGraph, session, vertex_dst = "WWD_INFLUENCE_RESULT", bypass = true)
   }
 
 
@@ -226,7 +226,7 @@ class credit_DS(var alpha: Double = 0.5,
           res._3 > 0.1
         }
       }
-      OracleDBUtil.savePath(toOutput, sqlContext)
+      OracleTools.savePath(toOutput, sqlContext)
     }
     val influences = paths.map { case (vid, vattr) =>
       val DAG = credit_DS.graphReduce(vattr)
