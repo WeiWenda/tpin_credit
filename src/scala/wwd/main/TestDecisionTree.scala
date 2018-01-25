@@ -4,21 +4,23 @@ import org.apache.spark.SparkConf
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.tree.DecisionTree
-import org.apache.spark.mllib.tree.model.DecisionTreeModel
 import org.apache.spark.sql.SparkSession
+import spray.json._
+import wwd.classify.impl.DecisionTreeClassifierRunner.MyJsonProtocol.{jsonFormat, lazyFormat}
 
 object TestDecisionTree {
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf()
-    conf.setJars(Seq("/Users/weiwenda/WorkSpace/IDEAWorkSpace/tpin/out/artifacts/ShannxiInfluence_jar/ShannxiInfluence.jar"))
-    val session = SparkSession
-      .builder
-      .config(conf)
-      .master("spark://MacLQ2.local:7077")
-      .appName(this.getClass.getSimpleName)
-      .getOrCreate()
-    val sc = session.sparkContext
+    case class TreeNode(name:String,children:Option[List[TreeNode]])
+    object MyJsonProtocol extends DefaultJsonProtocol {
+      implicit val fooFormat: JsonFormat[TreeNode] = lazyFormat(jsonFormat(TreeNode, "name", "children"))
+    }
+    import MyJsonProtocol._
+    val left = TreeNode("left deep1", Option.empty)
+    val right = TreeNode("right deep1", Option.empty)
+    val tree = TreeNode("root", Option(List(left,right)))
+    println(tree.toJson.prettyPrint)
   }
+
   def main1(args: Array[String]): Unit = {
     val conf = new SparkConf()
     conf.setJars(Seq("/Users/weiwenda/WorkSpace/IDEAWorkSpace/tpin/out/artifacts/ShannxiInfluence_jar/ShannxiInfluence.jar"))
@@ -30,18 +32,18 @@ object TestDecisionTree {
       .getOrCreate()
     val sc = session.sparkContext
     val input_init = sc.textFile("/Users/weiwenda/AnacondaProjects/MLBook/chapter03/lenses.txt").
-      map(_.split("\\s+")).map(e => if (e.length == 5){
-      e(4)="yes"
+      map(_.split("\\s+")).map(e => if (e.length == 5) {
+      e(4) = "yes"
       e
-    }  else{
-      e(4)="no"
+    } else {
+      e(4) = "no"
       e
-    } )
-    val age = input_init.map(e=>e(0)).distinct().collect()
-    val salary = input_init.map(e=>e(1)).distinct().collect()
-    val student = input_init.map(e=>e(2)).distinct().collect()
-    val credit = input_init.map(e=>e(3)).distinct().collect()
-    val labels = input_init.map(e=>e(4)).distinct().collect()
+    })
+    val age = input_init.map(e => e(0)).distinct().collect()
+    val salary = input_init.map(e => e(1)).distinct().collect()
+    val student = input_init.map(e => e(2)).distinct().collect()
+    val credit = input_init.map(e => e(3)).distinct().collect()
+    val labels = input_init.map(e => e(4)).distinct().collect()
     val input = input_init.map { e =>
       val label = labels.indexOf(e(4)).toDouble
       val tmp = Array(
@@ -50,13 +52,13 @@ object TestDecisionTree {
         student.indexOf(e(2)).toDouble,
         credit.indexOf(e(3)).toDouble
       )
-      LabeledPoint(label,Vectors.dense(tmp))
+      LabeledPoint(label, Vectors.dense(tmp))
     }
     val categoricalFeaturesInfo = Map[Int, Int]()
     val impurity = "entropy"
     val maxDepth = 5
     val maxBins = 32
-    val model = DecisionTree.trainClassifier(input,2,categoricalFeaturesInfo,
+    val model = DecisionTree.trainClassifier(input, 2, categoricalFeaturesInfo,
       impurity, maxDepth, maxBins)
     val labelAndPreds = input.map { point =>
       val prediction = model.predict(point.features)
@@ -66,8 +68,8 @@ object TestDecisionTree {
     println("Test Error = " + testErr)
     println("Learned classification tree model:\n" + model.toDebugString)
     // Save and load model
-//    model.save(sc, "target/myDecisionTreeClassificationModel")
-//    val sameModel = DecisionTreeModel.load(sc, "target/myDecisionTreeClassificationModel")
+    //    model.save(sc, "target/myDecisionTreeClassificationModel")
+    //    val sameModel = DecisionTreeModel.load(sc, "target/myDecisionTreeClassificationModel")
   }
 
 }
