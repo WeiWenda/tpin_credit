@@ -1,17 +1,15 @@
 package wwd.classify
 
-import com.sun.org.apache.xalan.internal.utils.FeatureManager.Feature
+
 import org.apache.spark.SparkContext
 import org.apache.spark.ml.{Pipeline, PipelineModel}
-import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, MulticlassClassificationEvaluator}
-import org.apache.spark.ml.feature.{IndexToString, StringIndexer, VectorAssembler, VectorIndexer}
+import org.apache.spark.ml.feature._
 import org.apache.spark.mllib.evaluation.MulticlassMetrics
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
-import wwd.utils.OracleTools
+import wwd.utils.{HdfsTools, OracleTools, Parameters}
 
-import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.ArrayBuffer
 
 abstract class ClassifierRunner {
@@ -31,30 +29,14 @@ abstract class ClassifierRunner {
   var predictions:Dataset[Row] = _
   @transient
   var metrics: MulticlassMetrics = _
+
   @transient
-  val registerInfo = Array("ZCDZ_NUM","ZCD_YB",
-    "SWHZDJRQ_MONTH","KYSLRQ_MONTH")
-  @transient
-  val scaleInfo = Array("TZF_NUM","ZCZB",
-    "TZZE","CYRS",
-    "FP_ZZSZYFP_XXJE_SUM","FP_ZZSZYFP_GXJE_SUM",
-  "FP_ZZSZYFP_GF_SUM","FP_ZZSZYFP_XF_SUM")
-  @transient
-  val affiliateInfo = Array("SB_ZZS_2003_YNSE_RATIO_AVG", "SB_ZZS_2003_YDKSEHJ_RATIO_AVG",
-    "SB_ZZS_2003_SJDKSE_RATIO_AVG", "SB_ZZS_2003_SF_RATIO_AVG",
-    "FP_ZZSZYFP_XFJSHJ_MEAN", "FP_ZZSZYFP_XFJSHJ_MEDIAN",
-    "FP_ZZSZYFP_CZGPTS_SUM", "FP_ZZSZYFP_CZKPTS_SUM")
-  @transient
-  val taxIndicator = Array("FDDBR_AGE","FDDBR_AREA",
-    "CWFZR_AGE","CWFZR_AREA",
-    "BSR_AGE","BSR_AREA",
-    "GD_NUM")
-  @transient
-  val neighborInfo = Array("OLD_FZ","NEI_MEAN",
-    "NEI_WMEAN","NEI_LNUM",
-    "INDEGREE","OUTDEGREE")
-  @transient
-  var featuresArray = ArrayBuffer()++registerInfo++scaleInfo++affiliateInfo++taxIndicator++neighborInfo
+  var featuresArray = ArrayBuffer()++
+    ClassifierRunner.registerInfo++
+    ClassifierRunner.scaleInfo++
+    ClassifierRunner.affiliateInfo++
+    ClassifierRunner.taxIndicator++
+    ClassifierRunner.neighborInfo
 
   initialize()
 
@@ -74,8 +56,33 @@ abstract class ClassifierRunner {
       .getOrCreate()
     sc = session.sparkContext
   }
+  /**
+    * Author: weiwenda
+    * Description: 将问题企业数据重复多遍，使得分类训练集数据均衡
+    * Date: 下午6:39 2018/1/24
+    */
+  def prepareDataSet(session: SparkSession): Dataset[Row] = {
+    val path = Parameters.ModelDir+"/whole_data.parquet"
+    if (!HdfsTools.Exist(sc, path)) {
+      val dataFromOracle = session.read.format("jdbc").
+        options(OracleTools.options + (("dbtable", "WWD_DECISION_TREE"))).load().
+        drop("NSRDZDAH").withColumnRenamed("WTBZ", "label")
+      import session.implicits._
+      val wrong = dataFromOracle.filter($"label" === "Y")
+      val good = dataFromOracle.filter($"label" === "N")
+      val duplicateTime = good.count() / wrong.count()
+      var duplicated = wrong
+      for (i <- Range(0, duplicateTime.toInt))
+        duplicated = duplicated.union(wrong)
+      val toSave = good.union(duplicated)
+      toSave.write.format("parquet").save(path)
+    }
+    session.read.load(path)
+  }
   def assembleFeatures(dataLabelDF: Dataset[Row]): Dataset[Row] = {
-    val assembler = new VectorAssembler().setInputCols(featuresArray.toArray).setOutputCol("features")
+    val assembler = new VectorAssembler()
+      .setInputCols(featuresArray.toArray)
+      .setOutputCol("features")
     assembler.transform(dataLabelDF)
   }
   /**
@@ -93,12 +100,12 @@ abstract class ClassifierRunner {
     testData = array(1)
     model = train(trainingData)
     // 作出预测
-    predictions = model.transform(testData)
+    predictions = model.transform(testData).cache()
   }
 
   /**
   * Author: weiwenda
-  * Description: f1|weightedPrecision|weightedRecall|accuracy
+  * Description: f1|weightedPrecision|weightedRecall|accuracy|maxtrix
   * Date: 下午9:41 2018/1/25
   */
   def evaluate(metricName:String="accuracy"):String = {
@@ -107,7 +114,7 @@ abstract class ClassifierRunner {
       val predictionAndLabels =
         predictions.select(col("prediction"), col("indexedLabel").cast(DoubleType)).rdd.map {
           case Row(prediction: Double, label: Double) => (prediction, label)
-        }.cache()
+        }
       metrics = new MulticlassMetrics(predictionAndLabels)
     }
     val metric = metricName match {
@@ -120,15 +127,15 @@ abstract class ClassifierRunner {
     metric.toString
   }
 
-  def showModel()
-
-  def saveModel(path:String="/user/weiwenda/model",overwrite:Boolean=true): Unit ={
+  def saveModel(overwrite:Boolean=true): Unit ={
+    val path = Parameters.ModelDir
     if(overwrite)
       model.write.overwrite().save(s"${path}/${this.getClass.getSimpleName}")
     else
       model.save(s"${path}/${this.getClass.getSimpleName}")
   }
-  def loadAndRerun(path:String="/user/weiwenda/model"): Unit ={
+  def loadAndRerun(): Unit ={
+    val path = Parameters.ModelDir
     dataLabelDF = assembleFeatures(prepareDataSet(session))
     val array = dataLabelDF.randomSplit(Array(0.7, 0.3))
     trainingData = array(0)
@@ -137,24 +144,8 @@ abstract class ClassifierRunner {
     // 作出预测
     predictions = model.transform(testData)
   }
-  /**
-    * Author: weiwenda
-    * Description: 将问题企业数据重复多遍，使得分类训练集数据均衡
-    * Date: 下午6:39 2018/1/24
-    */
-  def prepareDataSet(session: SparkSession): Dataset[Row] = {
-    val dataFromOracle = session.read.format("jdbc").
-      options(OracleTools.options + (("dbtable", "WWD_DECISION_TREE"))).load().
-      drop("NSRDZDAH").withColumnRenamed("WTBZ","label")
-    import session.implicits._
-    val wrong = dataFromOracle.filter($"label"==="Y")
-    val good = dataFromOracle.filter($"label"==="N")
-    val duplicateTime = good.count()/wrong.count()
-    var duplicated = wrong
-    for(i <- Range(0,duplicateTime.toInt))
-      duplicated = duplicated.union(wrong)
-    good.union(duplicated)
-  }
+
+  def showModel()
 
   def train(trainingData: Dataset[Row]):PipelineModel
 }
@@ -168,4 +159,21 @@ object ClassifierRunner{
     "BSR_AGE"->"办税人年龄","BSR_AREA"->"办税人省份","GD_NUM"->"股东数量","OLD_FZ"->"纳税信用评分",
     "NEI_MEAN"->"邻居平均评分","NEI_WMEAN"->"邻居加权评分","NEI_LNUM"->"低分邻居数量","INDEGREE"->"影响网络入度",
     "OUTDEGREE"->"影响网络出度")
+  val registerInfo = Array("ZCDZ_NUM","ZCD_YB",
+    "SWHZDJRQ_MONTH","KYSLRQ_MONTH")
+  val scaleInfo = Array("TZF_NUM","ZCZB",
+    "TZZE","CYRS",
+    "FP_ZZSZYFP_XXJE_SUM","FP_ZZSZYFP_GXJE_SUM",
+    "FP_ZZSZYFP_GF_SUM","FP_ZZSZYFP_XF_SUM")
+  val affiliateInfo = Array("SB_ZZS_2003_YNSE_RATIO_AVG", "SB_ZZS_2003_YDKSEHJ_RATIO_AVG",
+    "SB_ZZS_2003_SJDKSE_RATIO_AVG", "SB_ZZS_2003_SF_RATIO_AVG",
+    "FP_ZZSZYFP_XFJSHJ_MEAN", "FP_ZZSZYFP_XFJSHJ_MEDIAN",
+    "FP_ZZSZYFP_CZGPTS_SUM", "FP_ZZSZYFP_CZKPTS_SUM")
+  val taxIndicator = Array("FDDBR_AGE","FDDBR_AREA",
+    "CWFZR_AGE","CWFZR_AREA",
+    "BSR_AGE","BSR_AREA",
+    "GD_NUM")
+  val neighborInfo = Array("OLD_FZ","NEI_MEAN",
+    "NEI_WMEAN","NEI_LNUM",
+    "INDEGREE","OUTDEGREE")
 }

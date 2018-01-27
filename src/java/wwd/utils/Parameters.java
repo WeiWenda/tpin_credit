@@ -17,6 +17,8 @@ public class Parameters {
   public static final String ThreadNum;
   public static final String Home;
   public static final String Dir;
+  public static final String ModelDir;
+
 
 
   static {
@@ -54,6 +56,9 @@ public class Parameters {
 
     assert (properties.containsKey("Dir"));
     Dir = properties.getProperty("Dir");
+
+    assert (properties.containsKey("ModelDir"));
+    ModelDir = properties.getProperty("ModelDir");
   }
 
 }
