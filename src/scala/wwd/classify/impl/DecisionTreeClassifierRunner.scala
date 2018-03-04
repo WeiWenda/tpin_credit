@@ -20,12 +20,12 @@ class DecisionTreeClassifierRunner extends ClassifierRunner{
     val labelIndexer = new StringIndexer().setInputCol("label").setOutputCol("indexedLabel").fit(dataLabelDF)
     // 自动识别分类的特征，并对它们进行索引
     // 具有大于8个不同的值的特征被视为连续。
-    val featureIndexer = new VectorIndexer().setInputCol("features").setOutputCol("indexedFeatures").setMaxCategories(8).fit(dataLabelDF)
+    val featureIndexer = new VectorIndexer().setInputCol("features").setOutputCol("indexedFeatures").setMaxCategories(56).fit(dataLabelDF)
     val dt = new DecisionTreeClassifier()
       .setLabelCol("indexedLabel")
       .setFeaturesCol("indexedFeatures")
       .setImpurity("entropy") // 不纯度
-      .setMaxBins(100) // 离散化"连续特征"的最大划分数
+      .setMaxBins(56) // 离散化"连续特征"的最大划分数
       .setMaxDepth(5) // 树的最大深度
       .setMinInfoGain(0.01) //一个节点分裂的最小信息增益，值为[0,1]
       .setMinInstancesPerNode(10) //每个节点包含的最小样本数

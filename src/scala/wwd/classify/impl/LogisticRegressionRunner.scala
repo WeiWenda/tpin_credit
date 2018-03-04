@@ -19,7 +19,7 @@ class LogisticRegressionRunner extends ClassifierRunner {
   }
 
   override def assembleFeatures(dataLabelDF: Dataset[Row]) = {
-    removeFeature(Array("FDDBR_AREA", "CWFZR_AREA", "BSR_AREA", "ZCD_YB"))
+    removeFeature(ClassifierRunner.categoryInfo)
     super.assembleFeatures(dataLabelDF)
   }
 
