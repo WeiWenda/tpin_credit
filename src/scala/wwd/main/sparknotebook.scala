@@ -10,6 +10,11 @@ import wwd.utils.{HdfsTools, Parameters}
   * Created by weiwenda on 2018/3/5.
   */
 object sparknotebook {
+  /**
+   *Author:weiwenda
+   *Description:idea push test
+   *Date:11:48 2018/3/7
+   */
   def main(args: Array[String]) {
     val method =new credit_DS()
     val graph = method.getGraph(method.sc,method.session)
@@ -55,7 +60,6 @@ object sparknotebook {
         if(maxTris ==0) 0 else triCount/maxTris
     }
     println(clusterCoef.map(_._2).sum/preproccessedGraph.vertices.count)
-
   }
 
 }
