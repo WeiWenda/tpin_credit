@@ -3,6 +3,8 @@ package wwd.utils
 import org.apache.spark.graphx._
 import wwd.entity.impl._
 
+import scala.collection.mutable
+
 /**
   * Created by weiwenda on 2017/5/11.
   */
@@ -52,22 +54,17 @@ object InterlockTools {
   type Paths = Seq[Seq[(VertexId, Double)]]
 
   //annotation of david:默认要求重叠度为2（严格版）
-  def findFrequence(d: Seq[(VertexId, Seq[(Long, Double)])], degree: Int = 2): Seq[((Long, Long), Double)] = {
+  def findFrequence(d: Seq[(VertexId, mutable.Map[Long, Double])], degree: Int = 2): Seq[((Long, Long), Double)] = {
     val frequencies = d
     val result =
       for (i <- 0 until frequencies.length) yield
         for (j <- i + 1 until frequencies.length) yield {
           val (vid1, list1) = frequencies(i)
           val (vid2, list2) = frequencies(j)
-          val map1 = list1.toMap
-          val map2 = list2.toMap
-          val intersect = map1.keySet.intersect(map2.keySet)
+          val intersect = list1.keySet.intersect(list2.keySet)
           var weight = 0D
           for (key <- intersect){
-            //annotation of david:解决平行路径问题
-            val weight1 = list1.filter(_._1==key).map(_._2).max
-            val weight2 = list2.filter(_._1==key).map(_._2).max
-            weight += weight1.min(weight2)
+            weight += list1.getOrElse(key,0.0).min(list2.getOrElse(key,0.0))
           }
           if (weight > 0)
             Option(Iterable(((vid1, vid2), weight), ((vid2, vid1), weight)))
@@ -129,9 +126,9 @@ object InterlockTools {
     while (activeMessages > 0 && i <= maxIteratons) {
       prevG = preproccessedGraph
 
-      //annotation of david:长度=maxIteratons+1
+      //annotation of david:最终输出的路径长度为maxIteratons
       preproccessedGraph = preproccessedGraph.joinVertices[Paths](messages)((id, vd, path) => vd ++ path).cache()
-      print("iterator " + i + " finished! ")
+      println(s"iterator ${i} finished! path num:${messages.flatMap(_._2).count()}")
       i += 1
       if (i <= maxIteratons) {
         val oldMessages = messages
@@ -160,13 +157,16 @@ object InterlockTools {
 
     //annotation of david:此处无法使用反向获取路径，因为要求源点必须是人
 
-    //annotation of david:存在平行路径的问题
-    val messagesOfControls = getPath(initialGraph, weight, maxIteratons = 3).mapValues(lists => lists.filter(_.size > 1).
-      map { case list => val influ = list.map(_._2).min
-        (list.head._1, influ)
-      }
-    ).
-      filter(_._2.size > 0)
+    //annotation of david:存在平行路径的问题(resolved)
+    val messagesOfControls = getPath(initialGraph, weight, maxIteratons = 3).mapValues { lists =>
+      val result = mutable.HashMap[Long, Double]()
+      lists.filter(_.size > 1).foreach{ case list =>
+        val influ = list.map(_._2).min
+        result.update(list.head._1,result.getOrElse(list.head._1,influ).max(influ))
+        }
+      result
+    }.filter(_._2.size > 0)
+
     //        val messagesOfCompanys = getPath(initialGraph,weight,maxIteratons = 3).mapValues(lists=>lists.filter(_.size>1).map(_.last))
     //     println("messagesOfCompanys:")
     //     messagesOfCompanys.collect().foreach(println)
