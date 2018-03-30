@@ -1,10 +1,12 @@
 package wwd.main
 
 import org.apache.spark.graphx._
+import org.apache.spark.sql.catalyst.util.StringUtils
 import wwd.entity.{EdgeAttr, VertexAttr}
 import wwd.entity.impl.{WholeEdgeAttr, WholeVertexAttr}
 import wwd.strategy.impl.credit_DS
-import wwd.utils.{HdfsTools, Parameters}
+import wwd.utils.{OracleTools, HdfsTools, Parameters}
+import org.apache.commons.lang3
 
 /**
   * Created by weiwenda on 2018/3/5.
@@ -60,6 +62,13 @@ object sparknotebook {
         if(maxTris ==0) 0 else triCount/maxTris
     }
     println(clusterCoef.map(_._2).sum/preproccessedGraph.vertices.count)
+    //annotation of david:首先滤除带有字符的纳税人电子档案号，然后去重，最后输出到oracle
+    val rdd =  preproccessedGraph.vertices.
+      filter{case(vid,(attr,degree))=> lang3.StringUtils.isNumeric(attr.nsrdzdah)}.
+      map{case(vid,(attr,degree))=>(BigDecimal(attr.nsrdzdah).longValue(),vid)}.
+      reduceByKey((a,b)=>a.min(b)).
+      map{case(nsrdzdah,vid)=>OracleTools.Vertex2DAH(vid,nsrdzdah)}
+    OracleTools.saveVertexs(rdd,method.session)
   }
 
 }

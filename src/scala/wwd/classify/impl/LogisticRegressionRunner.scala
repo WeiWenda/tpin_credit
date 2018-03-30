@@ -9,7 +9,10 @@ import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import wwd.classify.ClassifierRunner
 import org.apache.spark.sql.functions.max
 
+import scala.collection.mutable.ArrayBuffer
+
 class LogisticRegressionRunner extends ClassifierRunner {
+  featuresArray = ArrayBuffer("nwais0","yczb","dfsl")
   override def showModel(): Unit = {
     val lorModel = model.stages.last.asInstanceOf[LogisticRegressionModel]
     // Print the weights and intercept for logistic regression.
@@ -19,7 +22,7 @@ class LogisticRegressionRunner extends ClassifierRunner {
   }
 
   override def assembleFeatures(dataLabelDF: Dataset[Row]) = {
-    removeFeature(ClassifierRunner.categoryInfo)
+//    setFeature(Array("nais","nwais0","yczb","dfsl"))
     super.assembleFeatures(dataLabelDF)
   }
 
@@ -27,10 +30,12 @@ class LogisticRegressionRunner extends ClassifierRunner {
 //    val (training: DataFrame, test: DataFrame) = loadDatasets("/user/weiwenda/data/mllib/sample_libsvm_data.txt",
 //      "libsvm","", "classification", 0.2)
 //    testData = test
-
+    val assembler = new VectorAssembler()
+      .setInputCols(featuresArray.toArray)
+      .setOutputCol("features")
     val sessionLocal = session
     import sessionLocal.implicits._
-    val labelIndexer = new StringIndexer().setInputCol("label").setOutputCol("indexedLabel")//.fit(dataLabelDF)
+//    val labelIndexer = new StringIndexer().setInputCol("label").setOutputCol("indexedLabel")//.fit(dataLabelDF)
     val scaler = new StandardScaler()
       .setInputCol("features")
       .setOutputCol("scaledFeatures")
@@ -38,7 +43,7 @@ class LogisticRegressionRunner extends ClassifierRunner {
       .setWithMean(false)
 
     val lr = new LogisticRegression()
-      .setLabelCol("indexedLabel")
+      .setLabelCol("label")
       .setFeaturesCol("scaledFeatures")
       .setMaxIter(100)
       .setRegParam(0.0)
@@ -46,7 +51,7 @@ class LogisticRegressionRunner extends ClassifierRunner {
 
     val startTime = System.nanoTime()
     // Fit the model
-    val pipeline = new Pipeline().setStages(Array(labelIndexer,scaler,lr))
+    val pipeline = new Pipeline().setStages(Array(assembler,scaler,lr))
     val pipelineModel = pipeline.fit(trainingData)
     val elapsedTime = (System.nanoTime() - startTime) / 1e9
     println(s"Training time: $elapsedTime seconds")

@@ -31,6 +31,8 @@ abstract class ClassifierRunner {
   var predictions: Dataset[Row] = _
   @transient
   var metrics: MulticlassMetrics = _
+  @transient
+  var reprepare:Boolean = false
 
   @transient
   var featuresArray = ArrayBuffer() ++
@@ -65,23 +67,23 @@ abstract class ClassifierRunner {
   /**
     * Author: weiwenda
     * Description: 将问题企业数据重复多遍，使得分类训练集数据均衡
+    * V2 :直接对正常企业进行下采样
     * Date: 下午6:39 2018/1/24
     */
   def prepareDataSet(session: SparkSession): Dataset[Row] = {
     val path = Parameters.ModelDir + "/whole_data.parquet"
-    if (!HdfsTools.Exist(sc, path)) {
-      val dataFromOracle = session.read.format("jdbc").
-        options(OracleTools.options + (("dbtable", "WWD_DECISION_TREE"))).load().
-        drop("NSRDZDAH").withColumnRenamed("WTBZ", "label")
+    if (!HdfsTools.Exist(sc, path) || reprepare) {
+      val dataFromParquet = session.read.load(s"${Parameters.Dir}/correlation.parquet").withColumnRenamed("wtbz","label")
       import session.implicits._
-      val wrong = dataFromOracle.filter($"label" === "Y")
-      val good = dataFromOracle.filter($"label" === "N")
-      val duplicateTime = good.count() / wrong.count()
-      var duplicated = wrong
-      for (i <- Range(0, duplicateTime.toInt))
-        duplicated = duplicated.union(wrong)
-      val toSave = good.union(duplicated)
-      toSave.write.format("parquet").save(path)
+      val wrong = dataFromParquet.filter($"label" === 1)
+      val good = dataFromParquet.filter($"label" === 0)
+      val sampleFraction = wrong.count() / good.count().toDouble
+      val sampled = good.sample(true,sampleFraction)
+//      var duplicated = wrong
+//      for (i <- Range(0, duplicateTime.toInt))
+//        duplicated = duplicated.union(wrong)
+      val toSave = wrong.union(sampled)
+      toSave.write.mode("overwrite").format("parquet").save(path)
     }
     session.read.load(path)
   }
@@ -102,7 +104,7 @@ abstract class ClassifierRunner {
     */
   def run(): Unit = {
     //annotation of david:加入缓存机制，如果primitiveGraph已加载则跳过
-    dataLabelDF = assembleFeatures(prepareDataSet(session))
+    dataLabelDF = prepareDataSet(session)
     val array = dataLabelDF.randomSplit(Array(0.7, 0.3))
     trainingData = array(0)
     testData = array(1)
@@ -120,7 +122,7 @@ abstract class ClassifierRunner {
     // 选择（预测标签，实际标签），并计算测试误差。
     if (metrics == null) {
       val predictionAndLabels =
-        predictions.select(col("prediction"), col("indexedLabel").cast(DoubleType)).rdd.map {
+        predictions.select(col("prediction"), col("label").cast(DoubleType)).rdd.map {
           case Row(prediction: Double, label: Double) => (prediction, label)
         }
       metrics = new MulticlassMetrics(predictionAndLabels)

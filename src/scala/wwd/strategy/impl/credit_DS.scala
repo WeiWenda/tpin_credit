@@ -495,11 +495,9 @@ object credit_DS {
     var pTrust = 0D
     val a = x._2
     val b = y._2
-    if (lambda == 1) pTrust = a.min(b)
-    else if (lambda == 2) pTrust = a * b
-    //        else if (lambda == Integer.MAX_VALUE) pTrust = (a + b - 1).max(0.0)
-    else if (lambda == 3) pTrust = (a * b) / (a + b - a * b)
-    else if (lambda == 4) pTrust = (a + b - 1).max(0.0)
+    if (lambda == 0) pTrust = a.min(b)
+    else if (lambda == 1) pTrust = a * b
+    else if (lambda == Integer.MAX_VALUE) pTrust = (a + b - 1).max(0.0)
     else pTrust = Math.log(1 + (((Math.pow(plambda, a) - 1) * ((Math.pow(plambda, b) - 1))) / (plambda - 1))) / Math.log(plambda)
     (y._1,pTrust)
   }

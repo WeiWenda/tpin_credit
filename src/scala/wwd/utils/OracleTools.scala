@@ -8,7 +8,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.execution.datasources.jdbc.{JDBCOptions, JdbcUtils}
 import org.apache.spark.sql.functions.max
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{Row, SQLContext, SparkSession, types}
+import org.apache.spark.sql._
 import org.apache.spark.storage.StorageLevel
 import wwd.entity.impl.{InfluEdgeAttr, InfluVertexAttr, WholeEdgeAttr, WholeVertexAttr}
 import wwd.entity.{EdgeAttr, VertexAttr}
@@ -30,12 +30,19 @@ object OracleTools {
     "user" -> Parameters.DataBaseUserName,
     "password" -> Parameters.DataBaseUserPassword)
 
-  def saveNeighborInfo(result: RDD[OOVertexAttr],session: SparkSession,dst:String="WWD_NEIGHBOR_INFO"): Unit = {
-    DataBaseManager.execute("truncate table " + dst)
+  def saveNeighborInfo(rowRDD: DataFrame,session: SparkSession,dst:String="WWD_NEIGHBOR_INFO"): Unit = {
     import session.implicits._
-    val rowRDD = result.toDF()
-    JdbcUtils.saveTable(rowRDD,Option(rowRDD.schema), false, new JDBCOptions(options+(("dbtable",dst ))))
+    val jOptions = new JDBCOptions(options+(("dbtable",dst )))
+    val conn = JdbcUtils.createConnectionFactory(jOptions)()
+    if(JdbcUtils.tableExists(conn,jOptions)){
+      JdbcUtils.truncateTable(conn,dst)
+    }else{
+      JdbcUtils.createTable(conn,rowRDD,jOptions)
+    }
+    JdbcUtils.saveTable(rowRDD,Option(rowRDD.schema), false, jOptions)
+    conn.close()
   }
+
   def saveWholeVertex(vertexs: VertexRDD[WholeVertexAttr], sqlContext: SQLContext, dst: String = "WWD_XYCD_VERTEX") = {
     DataBaseManager.execute("truncate table " + dst)
     val schema = StructType(
@@ -52,6 +59,52 @@ object OracleTools {
     val vertexDataFrame = sqlContext.createDataFrame(rowRDD, schema).repartition(30)
     JdbcUtils.saveTable(vertexDataFrame,Option(schema), false, new JDBCOptions(options+(("dbtable", dst))))
   }
+  /**
+   *Author:weiwenda
+   *Description:如果表存在清空，否则新建。
+   *Date:16:19 2018/3/9
+   */
+  case class Vertex2DAH(vid: Long,nsrdzdah:Long)
+  def saveVertexs(result:RDD[Vertex2DAH],session:SparkSession,dst:String="WWD_VERTEXS2DAH")={
+    import session.implicits._
+    val rowRDD = result.toDF()
+    val jOptions = new JDBCOptions(options+(("dbtable",dst )))
+    val conn = JdbcUtils.createConnectionFactory(jOptions)()
+    if(JdbcUtils.tableExists(conn,jOptions)){
+      JdbcUtils.truncateTable(conn,dst)
+    }else{
+      JdbcUtils.createTable(conn,rowRDD,jOptions)
+    }
+    JdbcUtils.saveTable(rowRDD,Option(rowRDD.schema), false, jOptions)
+    conn.close()
+  }
+
+  def saveWholeEdge(edges: RDD[EdgeTriplet[WholeVertexAttr, WholeEdgeAttr]], sqlContext: SQLContext, dst: String = "WWD_XYCD_EDGE") = {
+    DataBaseManager.execute("truncate table " + dst)
+    val schema = StructType(
+      List(
+        StructField("SRC_ID", LongType, true),
+        StructField("SRC_NSRDZDAH", StringType, true),
+        StructField("DST_ID", LongType, true),
+        StructField("DST_NSRDZDAH", StringType, true),
+        StructField("CONTROL_WEIGHT", DoubleType, true),
+        StructField("GD_WEIGHT", DoubleType, true),
+        StructField("INVESTMENT_WEIGHT", DoubleType, true),
+        StructField("TRADE_WEIGHT", DoubleType, true),
+        StructField("TRADE_JE", DoubleType, true),
+        StructField("TRADE_SE", DoubleType, true),
+        StructField("LABEL", StringType, true)
+      )
+    )
+
+    val rowRDD = edges.map(p => Row(p.srcId, p.srcAttr.nsrsbh,
+      p.dstId, p.dstAttr.nsrsbh, p.attr.w_control, p.attr.w_gd,
+      p.attr.w_tz, p.attr.w_trade, p.attr.trade_je, p.attr.se, zipLabel(p.attr.w_control, p.attr.w_gd,
+        p.attr.w_tz, p.attr.w_trade)))
+    val edgeDataFrame = sqlContext.createDataFrame(rowRDD, schema).repartition(30)
+    JdbcUtils.saveTable(edgeDataFrame,Option(schema), false, new JDBCOptions(options+(("dbtable", dst))))
+  }
+
   def getFromOracleTable2(sqlContext: SparkSession): Graph[WholeVertexAttr, WholeEdgeAttr] = {
     val dbstring = options
     import sqlContext.implicits._
@@ -181,7 +234,6 @@ object OracleTools {
     Graph(ALL_VERTEX_TMP, ALL_EDGE).persist()
   }
 
-
   def zipLabel(w_control: Double, w_gd: Double, w_tz: Double, w_trade: Double): String = {
     var toReturn = ""
     val formater = new DecimalFormat("#.###")
@@ -198,32 +250,6 @@ object OracleTools {
       toReturn += "交易：" + formater.format(w_trade) + "；"
     }
     return toReturn.substring(0, toReturn.length - 1)
-  }
-
-  def saveWholeEdge(edges: RDD[EdgeTriplet[WholeVertexAttr, WholeEdgeAttr]], sqlContext: SQLContext, dst: String = "WWD_XYCD_EDGE") = {
-    DataBaseManager.execute("truncate table " + dst)
-    val schema = StructType(
-      List(
-        StructField("SRC_ID", LongType, true),
-        StructField("SRC_NSRDZDAH", StringType, true),
-        StructField("DST_ID", LongType, true),
-        StructField("DST_NSRDZDAH", StringType, true),
-        StructField("CONTROL_WEIGHT", DoubleType, true),
-        StructField("GD_WEIGHT", DoubleType, true),
-        StructField("INVESTMENT_WEIGHT", DoubleType, true),
-        StructField("TRADE_WEIGHT", DoubleType, true),
-        StructField("TRADE_JE", DoubleType, true),
-        StructField("TRADE_SE", DoubleType, true),
-        StructField("LABEL", StringType, true)
-      )
-    )
-
-    val rowRDD = edges.map(p => Row(p.srcId, p.srcAttr.nsrsbh,
-      p.dstId, p.dstAttr.nsrsbh, p.attr.w_control, p.attr.w_gd,
-      p.attr.w_tz, p.attr.w_trade, p.attr.trade_je, p.attr.se, zipLabel(p.attr.w_control, p.attr.w_gd,
-        p.attr.w_tz, p.attr.w_trade)))
-    val edgeDataFrame = sqlContext.createDataFrame(rowRDD, schema).repartition(30)
-    JdbcUtils.saveTable(edgeDataFrame,Option(schema), false, new JDBCOptions(options+(("dbtable", dst))))
   }
 
   def saveFinalScore(finalScore: Graph[ResultVertexAttr, ResultEdgeAttr], sqlContext: SparkSession,
