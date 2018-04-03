@@ -4,8 +4,8 @@ import org.apache.spark.graphx._
 import org.apache.spark.sql.catalyst.util.StringUtils
 import wwd.entity.{EdgeAttr, VertexAttr}
 import wwd.entity.impl.{WholeEdgeAttr, WholeVertexAttr}
-import wwd.strategy.impl.credit_DS
-import wwd.utils.{OracleTools, HdfsTools, Parameters}
+import wwd.strategy.impl.{credit_DS, credit_Fuzz}
+import wwd.utils.{HdfsTools, OracleTools, Parameters}
 import org.apache.commons.lang3
 
 /**
@@ -69,6 +69,14 @@ object sparknotebook {
       reduceByKey((a,b)=>a.min(b)).
       map{case(nsrdzdah,vid)=>OracleTools.Vertex2DAH(vid,nsrdzdah)}
     OracleTools.saveVertexs(rdd,method.session)
+
+    val method2 =new credit_Fuzz()
+    val graph2 = method.getGraph(method.sc,method.session)
+    for(aa <- Range(1,4)){
+      val newGraph = method2.computeInfluencePro(graph2,pathLength=aa)
+      val df = method2.collectNeighborInfo(newGraph)
+      OracleTools.saveNeighborInfo(df.na.drop(),method.session,dst=s"WWD_NEIGHBOR_INFO_${aa}")
+    }
   }
 
 }

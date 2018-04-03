@@ -23,7 +23,7 @@ import scala.reflect.ClassTag
   * Date: 下午9:00 2017/11/29
   */
 case class FuzzEdgeAttr(val influ: Double) extends EdgeAttr
-case class Correlation(wtbz:Integer,xyfz:Integer,nais:Double,
+case class Correlation(vid:Long,wtbz:Integer,xyfz:Integer,nais:Double,
                        nwais0:Double,nwais1:Double,nwais2:Double,nwais3:Double,nwais4:Double,nwais5:Double,
                        nwais6:Double,nwais7:Double,nwais8:Double,nwais9:Double,nwais10:Double,ycsl:Double,dfsl:Integer,qysl:Integer)
 
@@ -34,7 +34,15 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
   type Paths = Seq[Seq[(VertexId, Double)]]
   override lazy val message1: String = s"模糊推理"
   var rules: HashMap[String, Map[String, Double]] = _
-
+  val membership = Range.Double(0, 1.01, 0.01).map{x=>
+    val a = 4
+    val b = -4
+    val c = 0.2
+    if (x-c>0)
+      (x,1/(1+Math.pow(a*(x-c),b)))
+    else
+      (x,0D)
+  }
   def _getMap(seq1: Array[(Double, Int)], amount: Long): Map[String, Double] = {
     Range.Double(0, 1.01, 0.02).map(e => (e, seq1.filter(_._1 <= e).map(_._2).sum / amount.toDouble)).toMap.
       map { case (key, value) =>
@@ -68,7 +76,9 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
   def _computeFuzzScore(il_bl: Double, tz_bl: Double, kg_bl: Double, jy_bl: Double) = {
     //annotation of david:计算最大的规则前件隶属度
     val upper = Seq(_newRule("il", il_bl), _newRule("tz", tz_bl), _newRule("kg", kg_bl), _newRule("jy", jy_bl)).max
-    upper
+    val index = membership.indexWhere { case (key, value) => value >= upper }
+    val newindex = if (index == -1) membership.size - 1 else index
+    membership(newindex)._1
   }
 
   /**
@@ -76,8 +86,8 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     * Description:进行直接影响关系度量
     * Date:20:00 2018/3/28
     */
-  def _getOrComputeInflu(tpin: Graph[InfluVertexAttr, InfluEdgeAttr]) = {
-    val paths = Seq(s"${hdfsDir}/fuzz_vertices", s"${hdfsDir}/fuzz_edges")
+  def _getOrComputeInflu(tpin: Graph[InfluVertexAttr, InfluEdgeAttr],suffix:String) = {
+    val paths = Seq(s"${hdfsDir}/fuzz_vertices${suffix}", s"${hdfsDir}/fuzz_edges${suffix}")
     //annotation of david:forceReConstruct=true表示强制重新构建原始TPIN,默认不强制
     if (!HdfsTools.Exist(sc, paths(0)) || !HdfsTools.Exist(sc, paths(1)) || forceReComputePath) {
       rules = _getRules(tpin)
@@ -96,8 +106,8 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     }
   }
 
-  def _getOrComputePaths(simplifiedGraph: Graph[InfluVertexAttr, FuzzEdgeAttr]) = {
-    val path = s"${hdfsDir}/fuzz_path"
+  def _getOrComputePaths(simplifiedGraph: Graph[InfluVertexAttr, FuzzEdgeAttr],maxLength:Int,suffix:String) = {
+    val path = s"${hdfsDir}/fuzz_path${suffix}"
     //annotation of david:forceReConstruct=true表示强制重新构建原始TPIN,默认不强制
     if (!HdfsTools.Exist(sc, path) || forceReComputePath) {
       //annotation of david:企业对自身的bel和pl均为1
@@ -112,7 +122,7 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
         }
       }
       def reduceMsg(a: Paths, b: Paths): Paths = a ++ b
-      val paths = credit_DS.getPathGeneric[Paths, FuzzEdgeAttr](initGraph, sendPaths, reduceMsg, maxIteratons = 4, initLength = 1).
+      val paths = credit_DS.getPathGeneric[Paths, FuzzEdgeAttr](initGraph, sendPaths, reduceMsg, maxIteratons = maxLength, initLength = 1).
         mapValues(e => e.filter(_.size > 1)).filter(e => e._2.size > 0)
       HdfsTools.checkDirExist(sc, path)
       paths.repartition(30).saveAsObjectFile(path)
@@ -127,18 +137,6 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
   def _influenceInTotal(influenceGraph: Graph[InfluVertexAttr,Seq[Double]]) = {
     val toReturn = influenceGraph.subgraph(epred = triplet => triplet.attr(0) > 0.01)
     toReturn
-  }
-  def computeInfluencePro(tpin: Graph[InfluVertexAttr, InfluEdgeAttr]) = {
-    val simplifiedGraph = _getOrComputeInflu(tpin)
-    val paths = _getOrComputePaths(simplifiedGraph)
-    //annotation of david:使用第一种三角范式
-    val influenceEdge = _influenceOnPath(paths, lambda, session)
-    val influenceGraph = Graph(simplifiedGraph.vertices, influenceEdge).persist()
-
-    //annotation of david:滤除影响力过小的边
-    val finalInfluenceGraph = _influenceInTotal(influenceGraph)
-    finalInfluenceGraph
-    //finalInfluenceGraph size: vertices:93523 edges:1850050
   }
   /**
    *Author:weiwenda
@@ -157,17 +155,20 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
   }
 
   //annotation of david:使用三角范式计算路径上的影响值（包含参照影响逻辑和基础影响逻辑）
-  protected def _influenceOnPath(paths: RDD[(VertexId, Paths)], lambda: Int, sqlContext: SparkSession) = {
+  protected def _influenceOnPath(paths: RDD[(VertexId, Paths)],lambda: Int, sqlContext: SparkSession,
+                                 pathLength:Int) = {
     val lambdaList = Seq[Double](0, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000, 100000)
     val influences = paths.
       map { case (vid, vattr) =>
-        val influenceSinglePath = vattr.map { path =>
+        val influenceSinglePath = vattr.
+          filter(_.size<=pathLength+1).
+          map { path =>
           val dst = path.last._1
-          val aid = for {
+          val Aid = for {
             lambdaLocal <- lambdaList
             res = path.reduceLeft((a, b) => _combineInfluence(a, b, lambdaLocal))
           } yield res._2
-          (dst, aid)
+          (dst, Aid)
         }
         (vid, influenceSinglePath)
       }.
@@ -215,6 +216,23 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     xyjb
   }
   /**
+  * Author: weiwenda
+  * Description: 进行影响关系度量，并滤除影响权重过小的边
+  * Date: 下午6:29 2018/4/1
+  */
+  def computeInfluencePro(tpin: Graph[InfluVertexAttr, InfluEdgeAttr],suffix:String="",pathLength:Int=4,maxLength:Int=4): Graph[InfluVertexAttr, Seq[Double]] = {
+    val simplifiedGraph = _getOrComputeInflu(tpin,suffix)
+    val paths = _getOrComputePaths(simplifiedGraph,maxLength,suffix)
+    //annotation of david:使用第一种三角范式
+    val influenceEdge = _influenceOnPath(paths, lambda, session,pathLength)
+    val influenceGraph = Graph(simplifiedGraph.vertices, influenceEdge).persist()
+
+    //annotation of david:滤除影响力过小的边
+    val finalInfluenceGraph = _influenceInTotal(influenceGraph)
+    finalInfluenceGraph
+    //finalInfluenceGraph size: vertices:93523 edges:1850050
+  }
+  /**
     *Author:weiwenda
     *Description: 收集14项融合因子
     *Date:9:59 2018/3/29
@@ -251,7 +269,7 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     val toReturn = tpin.
       vertices.
       join(nei_info).map { case (vid, ((xyfz,wtbz), (dfsl,ycsl,qysl,nais,nwais))) =>
-      Correlation(if(wtbz)1 else 0,xyfz,nais,nwais(0),nwais(1),nwais(2),nwais(3),nwais(4),nwais(5),nwais(6),nwais(7),nwais(8),nwais(9),nwais(10),ycsl,dfsl,qysl.toInt)
+      Correlation(vid,if(wtbz)1 else 0,xyfz,nais,nwais(0),nwais(1),nwais(2),nwais(3),nwais(4),nwais(5),nwais(6),nwais(7),nwais(8),nwais(9),nwais(10),ycsl,dfsl,qysl.toInt)
     }.toDF
 //    val usersDF = spark.read.load("examples/src/main/resources/users.parquet")
 //    usersDF.select("name", "favorite_color").write.save("namesAndFavColors.parquet")
