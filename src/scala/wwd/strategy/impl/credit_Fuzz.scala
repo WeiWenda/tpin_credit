@@ -23,7 +23,7 @@ import scala.reflect.ClassTag
   * Date: 下午9:00 2017/11/29
   */
 case class FuzzEdgeAttr(val influ: Double) extends EdgeAttr
-case class Correlation(vid:Long,wtbz:Integer,xyfz:Integer,nais:Double,
+case class Correlation(vid:Long,wtbz:Integer,xyfz:Double,nais:Double,
                        nwais0:Double,nwais1:Double,nwais2:Double,nwais3:Double,nwais4:Double,nwais5:Double,
                        nwais6:Double,nwais7:Double,nwais8:Double,nwais9:Double,nwais10:Double,ycsl:Double,dfsl:Integer,qysl:Integer)
 
@@ -86,7 +86,7 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     * Description:进行直接影响关系度量
     * Date:20:00 2018/3/28
     */
-  def _getOrComputeInflu(tpin: Graph[InfluVertexAttr, InfluEdgeAttr],suffix:String) = {
+  def _getOrComputeInflu(tpin: Graph[InfluVertexAttr, InfluEdgeAttr],suffix:String,topN:Integer) = {
     val paths = Seq(s"${hdfsDir}/fuzz_vertices${suffix}", s"${hdfsDir}/fuzz_edges${suffix}")
     //annotation of david:forceReConstruct=true表示强制重新构建原始TPIN,默认不强制
     if (!HdfsTools.Exist(sc, paths(0)) || !HdfsTools.Exist(sc, paths(1)) || forceReComputePath) {
@@ -99,7 +99,7 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
         attr
       }
       //annotation of david:此处限制了出度
-      val simplifiedGraph = credit_DS.simpleGraph(inferenced, (vid_attr: (Long, FuzzEdgeAttr)) => vid_attr._2.influ, 5)
+      val simplifiedGraph = credit_DS.simpleGraph(inferenced, (vid_attr: (Long, FuzzEdgeAttr)) => vid_attr._2.influ, topN)
       persist(simplifiedGraph, paths)
     } else {
       HdfsTools.getFromObjectFile[InfluVertexAttr, FuzzEdgeAttr](sc, paths(0), paths(1))
@@ -135,7 +135,7 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     *Date:21:01 2018/3/28
     */
   def _influenceInTotal(influenceGraph: Graph[InfluVertexAttr,Seq[Double]]) = {
-    val toReturn = influenceGraph.subgraph(epred = triplet => triplet.attr(0) > 0.01)
+    val toReturn = influenceGraph.subgraph(epred = triplet => triplet.attr(0) > 0)
     toReturn
   }
   /**
@@ -204,7 +204,7 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     val sqlContext = session
     val dbstring = OracleTools.options
     import sqlContext.implicits._
-    val XYJB_DF = sqlContext.read.format("jdbc").options(dbstring + (("dbtable", "WWD_SELF_INFO"))).load()
+    val XYJB_DF = sqlContext.read.format("jdbc").options(dbstring + (("dbtable", "WWD_SELF_INFO_2"))).load()
     val VERTEXS2DAH = sqlContext.read.format("jdbc").options(dbstring + (("dbtable", "WWD_VERTEXS2DAH"))).load()
     val xyjb = XYJB_DF.join(VERTEXS2DAH,"NSRDZDAH").select("vid", "SCORE", "WTBZ").rdd.
       map(row =>
@@ -220,8 +220,9 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
   * Description: 进行影响关系度量，并滤除影响权重过小的边
   * Date: 下午6:29 2018/4/1
   */
-  def computeInfluencePro(tpin: Graph[InfluVertexAttr, InfluEdgeAttr],suffix:String="",pathLength:Int=4,maxLength:Int=4): Graph[InfluVertexAttr, Seq[Double]] = {
-    val simplifiedGraph = _getOrComputeInflu(tpin,suffix)
+  def computeInfluencePro(tpin: Graph[InfluVertexAttr, InfluEdgeAttr],topN:Integer = 5,
+                          suffix:String="",pathLength:Int=4,maxLength:Int=4): Graph[InfluVertexAttr, Seq[Double]] = {
+    val simplifiedGraph = _getOrComputeInflu(tpin,suffix,topN)
     val paths = _getOrComputePaths(simplifiedGraph,maxLength,suffix)
     //annotation of david:使用第一种三角范式
     val influenceEdge = _influenceOnPath(paths, lambda, session,pathLength)
@@ -237,24 +238,31 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     *Description: 收集14项融合因子
     *Date:9:59 2018/3/29
     */
-  def collectNeighborInfo(fullTpin:Graph[InfluVertexAttr, Seq[Double]]) = {
+  def collectNeighborInfo(fullTpin:Graph[InfluVertexAttr, Seq[Double]],direction: EdgeDirection=EdgeDirection.Both) = {
     val sqlContext = session
     import sqlContext.implicits._
     val tpin = _removeIsolate(fullTpin).
-      joinVertices(_getScore()){
-        case (vid,attr,scoreAndwtbz) =>
-          attr.xyfz = scoreAndwtbz._1.toInt
-          attr.wtbz = scoreAndwtbz._2
-          attr
-      }.
-      mapVertices((vid, vattr) => (vattr.xyfz, vattr.wtbz))
-    val fzMessage = tpin.aggregateMessages[Seq[((Int,Boolean), Seq[Double])]](ctx =>
-      if (ctx.srcAttr._1 >= 0 && ctx.dstAttr._1 >= 0) {
-        ctx.sendToDst(Seq((ctx.srcAttr, ctx.attr)))
-        ctx.sendToSrc(Seq((ctx.dstAttr, ctx.attr)))
+      outerJoinVertices(_getScore()) {
+        case (vid, attr, opt) =>
+          if (!opt.isEmpty)
+            (opt.get._1, opt.get._2)
+          else
+            (Double.NaN, false)
+      }
+    val fzMessage = tpin.aggregateMessages[Seq[((Double,Boolean), Seq[Double])]](ctx =>
+      if (!ctx.srcAttr._1.isNaN && !ctx.dstAttr._1.isNaN){
+        direction match{
+          case EdgeDirection.Both =>
+            ctx.sendToDst(Seq((ctx.srcAttr, ctx.attr)))
+            ctx.sendToSrc(Seq((ctx.dstAttr, ctx.attr)))
+          case EdgeDirection.In =>
+            ctx.sendToDst(Seq((ctx.srcAttr, ctx.attr)))
+          case EdgeDirection.Out =>
+            ctx.sendToSrc(Seq((ctx.dstAttr, ctx.attr)))
+        }
       }, _ ++ _).cache()
     val nei_info = fzMessage.map { case (vid, list) =>
-      val dfsl = list.filter(e => e._1._1 >= 0 && e._1._1 < 70).size
+      val dfsl = list.filter(e => e._1._1 < 0.5).size
       val ycsl = list.filter(e=>e._1._2).size
       val nei_num = list.size.toDouble
       val nei_mean = list.map(_._1._1).sum / nei_num
