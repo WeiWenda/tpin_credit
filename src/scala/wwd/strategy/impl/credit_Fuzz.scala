@@ -245,6 +245,7 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
     finalInfluenceGraph
     //finalInfluenceGraph size: vertices:93523 edges:1850050
   }
+
   /**
     * Author:weiwenda
     * Description:收集13项融合因子
@@ -288,13 +289,13 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
         if (maxTris == 0) 0 else triCount / maxTris
     }
     val neighborCount = influTpin.
-      outerJoinVertices(_getScore()){
+      outerJoinVertices(_getScore()) {
         case (vid, attr, opt) =>
           if (!opt.isEmpty)
             attr.wtbz = opt.get._2
           else
             attr.wtbz = false
-          (attr,if(!opt.isEmpty) opt.get._1 else 0D)
+          (attr, if (!opt.isEmpty) opt.get._1 else 0D)
       }.
       aggregateMessages[Seq[Int]](ctx => {
       ctx.sendToDst(Seq(
@@ -308,17 +309,19 @@ class credit_Fuzz(ignoreIL: Boolean = false, forceReAdjust: Boolean = false,
         0,
         0,
         0, if (ctx.attr.jy_bl > 0) 1 else 0,
-        if (ctx.attr.il_bl > 0) 1 else 0, 1, 0,
-        if (ctx.dstAttr._1.wtbz) 1 else 0, if (ctx.dstAttr._1.wtbz) 0 else 1,
-        if (ctx.dstAttr._2 > 0.5) 1 else 0, if (ctx.dstAttr._2 <= 0.5) 1 else 0)
+        0, 1, 0,
+        if (ctx.attr.il_bl > 0) 0 else if (ctx.dstAttr._1.wtbz) 1 else 0,
+        if (ctx.attr.il_bl > 0) 0 else if (ctx.dstAttr._1.wtbz) 0 else 1,
+        if (ctx.attr.il_bl > 0) 0 else if (ctx.dstAttr._2 > 0.5) 1 else 0,
+        if (ctx.attr.il_bl > 0) 0 else if (ctx.dstAttr._2 <= 0.5) 1 else 0)
       )
-    }, (a,b)=>a.zip(b).map{case(c1,c2)=>c1+c2})
+    }, (a, b) => a.zip(b).map { case (c1, c2) => c1 + c2 })
 
     val toReturn = tpin.
       vertices.
-      join(nwapte).join(neighborCount).join(clusterCoef).map { case (vid,((((pte, wtbz),nwapte),narr),cluster)) =>
-      VNFeature(vid,pte,if (wtbz) 1 else 0,nwapte,narr(0),narr(1),narr(2),narr(3),narr(4),narr(5),narr(6),narr(7),narr(8),
-        narr(9),narr(10),cluster)
+      join(nwapte).join(neighborCount).join(clusterCoef).map { case (vid, ((((pte, wtbz), nwapte), narr), cluster)) =>
+      VNFeature(vid, pte, if (wtbz) 1 else 0, nwapte, narr(0), narr(1), narr(2), narr(3), narr(4), narr(5), narr(6), narr(7), narr(8),
+        narr(9), narr(10), cluster)
     }.toDF
     //    val usersDF = spark.read.load("examples/src/main/resources/users.parquet")
     //    usersDF.select("name", "favorite_color").write.save("namesAndFavColors.parquet")
